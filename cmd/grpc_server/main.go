@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 	"net"
+
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/brianvoe/gofakeit"
 	"google.golang.org/grpc"
@@ -24,6 +25,7 @@ type server struct {
 // Get user by id
 func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("User id: %d", req.GetId())
+	log.Printf("ctx: %+v", ctx)
 	return &desc.GetResponse{
 		User: &desc.User{
 			Id: req.Id,
@@ -41,6 +43,7 @@ func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetRespon
 // Create user
 func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	log.Printf("User email: %s", req.GetInfo().GetEmail())
+	log.Printf("ctx: %+v", ctx)
 	return &desc.CreateResponse{
 		Id: int64(gofakeit.Number(0, 100)),
 	}, nil
@@ -49,12 +52,14 @@ func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Cre
 // Update user credentials
 func (s *server) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
 	log.Printf("User email: %s", req.GetInfo().GetEmail())
+	log.Printf("ctx: %+v", ctx)
 	return nil, nil
 }
 
 // Delete user
 func (s *server) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
 	log.Printf("User id: %d", req.GetId())
+	log.Printf("ctx: %+v", ctx)
 	return nil, nil
 }
 
