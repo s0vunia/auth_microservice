@@ -30,7 +30,7 @@ services:
     env_file:
       - local.env
     ports:
-      - "54321:5432"
+      - "5432:5432"
     volumes:
       - postgres_volume_local:/var/lib/postgresql/data
 
@@ -39,7 +39,7 @@ services:
     env_file:
       - prod.env
     ports:
-      - "54322:5432"
+      - "5432:5432"
     volumes:
       - postgres_volume_prod:/var/lib/postgresql/data
 
