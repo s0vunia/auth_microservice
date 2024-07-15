@@ -58,10 +58,8 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v3
 
-      - name: Setup docker-compose
-        uses: KengoTODA/actions-setup-docker-compose@v1.2.2
-        with:
-          version: '3'
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.0
@@ -88,7 +86,7 @@ jobs:
             docker pull $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME
             
             # Deploy services defined in docker-compose.yml
-            docker-compose up -d auth-prod pg-prod migrator-prod
+            docker compose up -d auth-prod pg-prod migrator-prod
 
             # Optionally, remove the copied docker-compose.yml file
             rm docker-compose.yml
