@@ -61,6 +61,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Create env files
+        run: |
+          touch local.env
+          touch prod.env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> prod.env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> prod.env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> prod.env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> prod.env
+          echo PG_DSN=${{ secrets.PG_DSN }} >> prod.env
+          echo MIGRATION_DSN=${{ secrets.MIGRATION_DSN }} >> prod.env
+          echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
+          echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
+          echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          cat prod.env
+
+      - name: Copy files to server
+        run: |
+          # Copy docker-compose.yml to server
+          scp ./docker-compose.yml ./local.env ./prod.env ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
+
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -74,9 +94,6 @@ jobs:
 
             # Login into Selectel Registry
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
-
-            # Copy docker-compose.yml to server
-            scp ./docker-compose.yml ./local.env ./prod.env ${{ secrets.SERVER_USER }}@$SERVER_HOST:/tmp/
 
             # Navigate to /tmp/ on the server
             cd /tmp/
