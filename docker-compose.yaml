@@ -54,7 +54,7 @@ services:
       - pg-local
 
   migrator-prod:
-    image: "${REGISTRY}/${MIGRATE_IMAGE_NAME}:${TAG_NAME}"
+    image: "${REGISTRY}/${MIGRATOR_IMAGE_NAME}:${TAG_NAME}"
     build:
       context: .
       dockerfile: migration_prod.Dockerfile
