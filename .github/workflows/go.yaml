@@ -26,6 +26,11 @@ jobs:
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
+      - name: Copy environment files
+        run: |
+          cp local.env .
+          cp prod.env .
+
       - name: Build and Push Docker Image
         run: |
           TAG_NAME=$(echo $GITHUB_SHA | head -c7)
