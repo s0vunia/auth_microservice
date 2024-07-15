@@ -76,10 +76,15 @@ jobs:
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
           cat prod.env
 
-      - name: Copy files to server
-        run: |
-          # Copy docker-compose.yml to server
-          scp ./docker-compose.yml ./local.env ./prod.env ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
+      - name: Copy files to server using SSH key
+        uses: appleboy/scp-action@0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./docker-compose.yml,./local.env,./prod.env"
+          target: "/tmp/"
+
 
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.0
