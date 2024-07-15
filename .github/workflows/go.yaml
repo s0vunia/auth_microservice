@@ -28,8 +28,8 @@ jobs:
 
       - name: Copy environment files
         run: |
-          cp local.env .
-          cp prod.env .
+          cp $GITHUB_WORKSPACE/local.env .
+          cp $GITHUB_WORKSPACE/prod.env .
 
       - name: Build and Push Docker Image
         run: |
