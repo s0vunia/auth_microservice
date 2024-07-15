@@ -82,7 +82,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "docker-compose.yml,local.env,prod.env"
+          source: "docker-compose.yaml,local.env,prod.env"
           target: "/tmp/"
 
 
@@ -112,7 +112,7 @@ jobs:
             docker compose up -d auth-prod pg-prod migrator-prod
 
             # Optionally, remove the copied docker-compose.yml file
-            rm docker-compose.yml
+            rm docker-compose.yaml
 
   linter:
     name: lint
