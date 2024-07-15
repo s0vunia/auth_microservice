@@ -24,7 +24,10 @@ import (
 	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
 )
 
-var configPath string
+var (
+	configPath           string
+	countTriesToPostgres int = 3
+)
 
 func init() {
 	configPath = os.Getenv("CONFIG_PATH")
@@ -210,11 +213,19 @@ func main() {
 	}
 
 	// Создаем пул соединений с базой данных
-	pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
+	var pool *pgxpool.Pool
+	for i := 0; i < countTriesToPostgres; i++ {
+		pool, err = pgxpool.Connect(ctx, pgConfig.DSN())
+		if err == nil {
+			break
+		}
+		log.Printf("Failed to connect to database: %v. Attempt #%d\n", err, i+1)
+		time.Sleep(2 * time.Second)
+	}
+	defer pool.Close()
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	defer pool.Close()
 
 	s := grpc.NewServer()
 	reflection.Register(s)
