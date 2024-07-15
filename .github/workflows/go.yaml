@@ -82,7 +82,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSHKEY }}
-          source: "./docker-compose.yml,./local.env,./prod.env"
+          source: "docker-compose.yml,local.env,prod.env"
           target: "/tmp/"
 
 
@@ -102,6 +102,7 @@ jobs:
 
             # Navigate to /tmp/ on the server
             cd /tmp/
+            ls
             
             # Pull images from registry
             docker pull $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME
