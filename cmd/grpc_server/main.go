@@ -26,7 +26,7 @@ import (
 
 var (
 	configPath           string
-	countTriesToPostgres int = 3
+	countTriesToPostgres = 3
 )
 
 func init() {
