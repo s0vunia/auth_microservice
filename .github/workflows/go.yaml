@@ -61,7 +61,7 @@ jobs:
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
             # Copy docker-compose.yml to server
-            scp ./docker-compose.yml ${{ secrets.SERVER_USER }}@$SERVER_HOST:/tmp/
+            scp ./docker-compose.yml ./local.env ./prod.env ${{ secrets.SERVER_USER }}@$SERVER_HOST:/tmp/
 
             # Navigate to /tmp/ on the server
             cd /tmp/
