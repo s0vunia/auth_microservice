@@ -58,8 +58,8 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v3
 
-      - name: Setup Docker Compose
-        uses: docker/setup-compose-action@v2
+      - name: Setup docker-compose
+        uses: KengoTODA/actions-setup-docker-compose@v1.2.2
 
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.0
