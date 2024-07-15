@@ -107,7 +107,13 @@ jobs:
             # Pull images from registry
             docker pull $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME
             docker pull $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME
-            
+
+            # Export environment variables for docker-compose
+            export TAG_NAME=$TAG_NAME
+            export REGISTRY=$REGISTRY
+            export AUTH_IMAGE_NAME=$AUTH_IMAGE_NAME
+            export MIGRATOR_IMAGE_NAME=$MIGRATOR_IMAGE_NAME
+      
             # Deploy services defined in docker-compose.yml
             docker compose up -d auth-prod pg-prod migrator-prod
 

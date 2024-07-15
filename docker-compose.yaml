@@ -17,11 +17,9 @@ services:
       - pg-local
 
   auth-prod:
+    image: "${REGISTRY}/${AUTH_IMAGE_NAME}:${TAG_NAME}"
     environment:
       - CONFIG_PATH=prod.env
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "50052:50052"
     depends_on:
@@ -56,6 +54,7 @@ services:
       - pg-local
 
   migrator-prod:
+    image: "${REGISTRY}/${MIGRATE_IMAGE_NAME}:${TAG_NAME}"
     build:
       context: .
       dockerfile: migration_prod.Dockerfile
