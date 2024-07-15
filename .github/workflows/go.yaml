@@ -60,6 +60,8 @@ jobs:
 
       - name: Setup docker-compose
         uses: KengoTODA/actions-setup-docker-compose@v1.2.2
+        with:
+          version: '3'
 
       - name: Deploy to Selectel Cloud via SSH action
         uses: appleboy/ssh-action@v1.0.0
