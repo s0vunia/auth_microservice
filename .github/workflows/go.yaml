@@ -7,10 +7,10 @@ on:
     branches: [ main, master, hw3 ]
 
 env:
-  REGISTRY: "chat-service.cr.cloud.ru"
+  REGISTRY: "auth-service.cr.cloud.ru"
   AUTH_IMAGE_NAME: "auth-prod"
-  MIGRATOR_IMAGE_NAME: "migrator-prod"
-  CONTAINER_NAME: "crud-server-container"
+  MIGRATOR_IMAGE_NAME: "auth-migrator-prod"
+  CONTAINER_NAME: "auth-server-container"
 
 jobs:
   image-build-and-push:
