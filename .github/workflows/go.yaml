@@ -2,12 +2,12 @@ name: Go
 
 on:
   push:
-    branches: [ main, master, hw2 ]
+    branches: [ main, master, hw3 ]
   pull_request:
-    branches: [ main, master, hw2 ]
+    branches: [ main, master, hw3 ]
 
 env:
-  REGISTRY: "cr.selcloud.ru/s0vunia"
+  REGISTRY: "s0vunia.cr.cloud.ru"
   AUTH_IMAGE_NAME: "auth-prod"
   MIGRATOR_IMAGE_NAME: "migrator-prod"
   CONTAINER_NAME: "crud-server-container"
@@ -44,11 +44,11 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           TAG_NAME=$(echo $GITHUB_SHA | head -c7)
-          docker buildx create --use
-          docker buildx build --no-cache --push --tag $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME -f Dockerfile .
+          sudo docker buildx create --use
+          sudo docker buildx build --no-cache --push --tag $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME -f Dockerfile .
           
-          docker buildx create --use
-          docker buildx build --no-cache --push --tag $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME -f migration_prod.Dockerfile .
+          sudo docker buildx create --use
+          sudo docker buildx build --no-cache --push --tag $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME -f migration_prod.Dockerfile .
 
   deploy-image:
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSHKEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           source: "docker-compose.yaml,local.env,prod.env"
           target: "/tmp/"
 
@@ -91,7 +91,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSHKEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           envs: AUTH_IMAGE_NAME,MIGRATOR_IMAGE_NAME,REGISTRY,GITHUB_SHA,CONTAINER_NAME
           script: |
             # Set up variables
@@ -105,20 +105,26 @@ jobs:
             ls
             
             # Pull images from registry
-            docker pull $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME
-            docker pull $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME
+            sudo docker pull $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME
+            sudo docker pull $REGISTRY/$MIGRATOR_IMAGE_NAME:$TAG_NAME
 
             # Export environment variables for docker-compose
             export TAG_NAME=$TAG_NAME
             export REGISTRY=$REGISTRY
             export AUTH_IMAGE_NAME=$AUTH_IMAGE_NAME
             export MIGRATOR_IMAGE_NAME=$MIGRATOR_IMAGE_NAME
-      
+            
+            touch .env
+            echo "REGISTRY=$REGISTRY" >> .env
+            echo "MIGRATOR_IMAGE_NAME=$MIGRATOR_IMAGE_NAME" >> .env
+            echo "AUTH_IMAGE_NAME=$AUTH_IMAGE_NAME" >> .env
+            echo "TAG_NAME=$TAG_NAME" >> .env
+            
             # Deploy services defined in docker-compose.yml
-            docker compose up -d auth-prod pg-prod migrator-prod
+            sudo docker compose up --env-file .env -d auth-prod pg-prod migrator-prod
 
             # Optionally, remove the copied docker-compose.yml file
-            rm docker-compose.yaml
+            sudo rm docker-compose.yaml
 
   linter:
     name: lint
