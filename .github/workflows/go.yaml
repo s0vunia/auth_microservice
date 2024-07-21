@@ -100,7 +100,7 @@ jobs:
             TAG_NAME=$(echo $GITHUB_SHA | head -c7)
 
             # Login into Selectel Registry
-            docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+            sudo docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
             # Navigate to /tmp/ on the server
             cd /tmp/
