@@ -123,7 +123,7 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> .env
             
             # Deploy services defined in docker-compose.yml
-            sudo docker compose up --env-file .env -d auth-prod pg-prod migrator-prod
+            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod
 
             # Optionally, remove the copied docker-compose.yml file
             sudo rm docker-compose.yaml
