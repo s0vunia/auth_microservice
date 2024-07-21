@@ -7,7 +7,7 @@ on:
     branches: [ main, master, hw3 ]
 
 env:
-  REGISTRY: "s0vunia.cr.cloud.ru"
+  REGISTRY: "chat-service.cr.cloud.ru"
   AUTH_IMAGE_NAME: "auth-prod"
   MIGRATOR_IMAGE_NAME: "migrator-prod"
   CONTAINER_NAME: "crud-server-container"
