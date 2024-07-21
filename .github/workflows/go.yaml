@@ -24,7 +24,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to Docker Registry
-        run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+        run: sudo docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
       - name: Create env files
         run: |
@@ -43,6 +43,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
+          sudo docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+
           TAG_NAME=$(echo $GITHUB_SHA | head -c7)
           sudo docker buildx create --use
           sudo docker buildx build --no-cache --push --tag $REGISTRY/$AUTH_IMAGE_NAME:$TAG_NAME -f Dockerfile .
