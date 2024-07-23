@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
 )
