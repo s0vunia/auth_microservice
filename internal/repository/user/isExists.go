@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
 )

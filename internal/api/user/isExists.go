@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+
 	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
 )
 
