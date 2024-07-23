@@ -13,6 +13,7 @@ service AuthV1 {
   rpc Get(GetRequest) returns (GetResponse);
   rpc Update(UpdateRequest) returns (google.protobuf.Empty);
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc IsExists(IsExistsRequest) returns (IsExistsResponse);
 }
 
 enum Role {
@@ -69,4 +70,12 @@ message UpdateRequest {
 
 message DeleteRequest {
   int64 id = 1;
+}
+
+message IsExistsRequest {
+  int64 id = 1;
+}
+
+message IsExistsResponse {
+  bool exists = 1;
 }
