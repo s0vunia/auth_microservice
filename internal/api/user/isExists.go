@@ -8,7 +8,7 @@ import (
 
 // IsExists checks if a user exists.
 func (i *Implementation) IsExists(ctx context.Context, req *desc.IsExistsRequest) (*desc.IsExistsResponse, error) {
-	exists, err := i.userService.IsExists(ctx, req.GetId())
+	exists, err := i.userService.IsExists(ctx, req.GetIds())
 	if err != nil {
 		return nil, err
 	}

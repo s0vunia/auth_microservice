@@ -73,7 +73,7 @@ message DeleteRequest {
 }
 
 message IsExistsRequest {
-  int64 id = 1;
+  repeated int64 ids = 1;
 }
 
 message IsExistsResponse {
