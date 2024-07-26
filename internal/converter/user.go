@@ -39,7 +39,7 @@ func ToUserUpdateFromDesc(userUpdate *desc.UserUpdate) *model.UserUpdate {
 	var (
 		email *string
 		name  *string
-		role  *model.Role
+		role  model.Role
 	)
 
 	if userUpdate.GetEmail() != nil {
@@ -49,7 +49,7 @@ func ToUserUpdateFromDesc(userUpdate *desc.UserUpdate) *model.UserUpdate {
 		name = &userUpdate.GetName().Value
 	}
 	if userUpdate.GetRole() != desc.Role_UNKNOWN {
-		role = (*model.Role)(userUpdate.GetRole().Enum())
+		role = (model.Role)(userUpdate.GetRole())
 	}
 	return &model.UserUpdate{
 		Email: email,

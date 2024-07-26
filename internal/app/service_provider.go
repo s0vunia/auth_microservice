@@ -11,6 +11,7 @@ import (
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/closer"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository"
+	logRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/log"
 	userRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/service"
 	userService "github.com/s0vunia/auth_microservices_course_boilerplate/internal/service/user"
@@ -23,6 +24,7 @@ type serviceProvider struct {
 	dbClient       db.Client
 	txManager      db.TxManager
 	userRepository repository.UserRepository
+	logsRepository repository.LogRepository
 
 	userService service.UserService
 
@@ -94,10 +96,19 @@ func (s *serviceProvider) UserRepository(ctx context.Context) repository.UserRep
 	return s.userRepository
 }
 
+func (s *serviceProvider) LogsRepository(ctx context.Context) repository.LogRepository {
+	if s.logsRepository == nil {
+		s.logsRepository = logRepository.NewRepository(s.DBClient(ctx))
+	}
+
+	return s.logsRepository
+}
+
 func (s *serviceProvider) NoteService(ctx context.Context) service.UserService {
 	if s.userService == nil {
 		s.userService = userService.NewService(
 			s.UserRepository(ctx),
+			s.LogsRepository(ctx),
 			s.TxManager(ctx),
 		)
 	}
