@@ -37,7 +37,7 @@ local-migration-down:
 	$(LOCAL_BIN)/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
 
 local-docker-compose-up:
-	sudo docker compose up -d --build auth-local pg-local migrator-local
+	sudo docker compose up -d --build auth-local pg-local migrator-local redis-local
 
 prod-docker-compose-up:
 	docker compose up -d --build pg-prod migrator-prod

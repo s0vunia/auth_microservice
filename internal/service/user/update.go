@@ -15,6 +15,11 @@ func (s serv) Update(ctx context.Context, id int64, userUpdate *model.UserUpdate
 			return errTx
 		}
 
+		errTx = s.cache.Delete(ctx, id)
+		if errTx != nil {
+			return errTx
+		}
+
 		_, errTx = s.logsRepository.Create(ctx, &model.LogCreate{
 			Message: fmt.Sprintf("User %d updated", id),
 		})

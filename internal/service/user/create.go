@@ -16,6 +16,19 @@ func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, 
 			return errTx
 		}
 
+		errTx = s.cache.Create(ctx, &model.User{
+			ID: id,
+			Info: model.UserInfo{
+				Name:  userCreate.Name,
+				Email: userCreate.Email,
+				Role:  userCreate.Role,
+			},
+		})
+
+		if errTx != nil {
+			return errTx
+		}
+
 		_, errTx = s.logsRepository.Create(ctx, &model.LogCreate{
 			Message: fmt.Sprintf("User %d created", id),
 		})

@@ -12,15 +12,25 @@ func (s serv) Get(ctx context.Context, id int64) (*model.User, error) {
 
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
-		user, errTx = s.userRepository.Get(ctx, id)
+
+		user, errTx = s.cache.Get(ctx, id)
+		message := fmt.Sprintf("User %d got from cache", id)
 		if errTx != nil {
-			return errTx
+			message = fmt.Sprintf("User %d got from db", id)
+			user, errTx = s.userRepository.Get(ctx, id)
+			if errTx != nil {
+				return errTx
+			}
+
+			errTx = s.cache.Create(ctx, user)
+			if errTx != nil {
+				return errTx
+			}
 		}
 
 		_, errTx = s.logsRepository.Create(ctx, &model.LogCreate{
-			Message: fmt.Sprintf("User %d got", id),
+			Message: message,
 		})
-
 		if errTx != nil {
 			return errTx
 		}

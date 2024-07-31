@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ main, master, hw3 ]
+    branches: [ main, master, hw4 ]
   pull_request:
-    branches: [ main, master, hw3 ]
+    branches: [ main, master, hw4 ]
 
 env:
   REGISTRY: "auth-service.cr.cloud.ru"
@@ -39,6 +39,11 @@ jobs:
           echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
           echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> prod.env
+          echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
+          echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
+          echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
           cat prod.env
 
       - name: Build and Push Docker Image
@@ -76,6 +81,11 @@ jobs:
           echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
           echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> prod.env
+          echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
+          echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
+          echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
           cat prod.env
 
       - name: Copy files to server using SSH key
@@ -123,7 +133,7 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> .env
             
             # Deploy services defined in docker-compose.yml
-            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod
+            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod
 
             # Optionally, remove the copied docker-compose.yml file
             sudo rm docker-compose.yaml

@@ -3,6 +3,8 @@ version: '3'
 volumes:
   postgres_volume_local:
   postgres_volume_prod:
+  redis_volume_local:
+  redis_volume_prod:
 
 services:
   auth-local:
@@ -15,6 +17,7 @@ services:
         - "50051:50051"
     depends_on:
       - pg-local
+      - redis-local
 
   auth-prod:
     image: "${REGISTRY}/${AUTH_IMAGE_NAME}:${TAG_NAME}"
@@ -24,6 +27,7 @@ services:
       - "50052:50052"
     depends_on:
       - pg-prod
+      - redis-prod
 
   pg-local:
     image: postgres:14-alpine3.17
@@ -63,3 +67,19 @@ services:
       DB_HOST: pg-prod
     depends_on:
       - pg-prod
+
+  redis-local:
+    image: redis:7.2.5-alpine3.20
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_volume_local:/data
+
+  redis-prod:
+    image: redis:7.2.5-alpine3.20
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_volume_prod:/data
