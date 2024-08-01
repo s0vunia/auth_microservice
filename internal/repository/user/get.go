@@ -3,8 +3,9 @@ package user
 import (
 	"context"
 
+	"github.com/s0vunia/platform_common/pkg/db"
+
 	sq "github.com/Masterminds/squirrel"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user/converter"
 	modelRepo "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user/model"

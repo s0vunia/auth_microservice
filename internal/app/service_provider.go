@@ -4,19 +4,20 @@ import (
 	"context"
 	"log"
 
+	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
+	"github.com/s0vunia/platform_common/pkg/cache/redis"
+	"github.com/s0vunia/platform_common/pkg/closer"
+	"github.com/s0vunia/platform_common/pkg/db"
+	"github.com/s0vunia/platform_common/pkg/db/pg"
+	"github.com/s0vunia/platform_common/pkg/db/transaction"
+
 	redigo "github.com/gomodule/redigo/redis"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache"
 	userCache "github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user"
-	cacheCl "github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/cache"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/cache/redis"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config/env"
 
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/api/user"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db/pg"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db/transaction"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/closer"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository"
 	logRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/log"
@@ -131,7 +132,7 @@ func (s *serviceProvider) RedisPool() *redigo.Pool {
 
 func (s *serviceProvider) RedisClient() cacheCl.Client {
 	if s.redisClient == nil {
-		s.redisClient = redis.NewClient(s.RedisPool(), s.RedisConfig())
+		s.redisClient = redis.NewClient(s.RedisPool(), s.RedisConfig().ConnectionTimeout())
 	}
 
 	return s.redisClient

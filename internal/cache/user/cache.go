@@ -9,8 +9,8 @@ import (
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user/converter"
 	modelCache "github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user/model"
-	cacheCl "github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/cache"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
 )
 
 type cacheImplementation struct {

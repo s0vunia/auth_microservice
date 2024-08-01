@@ -2,9 +2,9 @@ package user
 
 import (
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository"
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/service"
+	"github.com/s0vunia/platform_common/pkg/db"
 )
 
 type serv struct {

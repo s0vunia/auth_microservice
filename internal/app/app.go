@@ -6,7 +6,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/closer"
+	"github.com/s0vunia/platform_common/pkg/closer"
+
 	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
 
 	"google.golang.org/grpc"
