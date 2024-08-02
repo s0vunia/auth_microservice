@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 type UserCache interface {

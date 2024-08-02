@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	modelCache "github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user/model"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	modelCache "github.com/s0vunia/auth_microservice/internal/cache/user/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 func ToUserCacheFromModel(user *model.User) *modelCache.User {

@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 // UserRepository represents a repository for user entities.

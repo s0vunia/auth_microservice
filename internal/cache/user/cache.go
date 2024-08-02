@@ -6,10 +6,10 @@ import (
 
 	redigo "github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user/converter"
-	modelCache "github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user/model"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/cache"
+	"github.com/s0vunia/auth_microservice/internal/cache/user/converter"
+	modelCache "github.com/s0vunia/auth_microservice/internal/cache/user/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
 )
 

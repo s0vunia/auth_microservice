@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, error) {

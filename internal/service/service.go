@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 // UserService represents a service for user entities.

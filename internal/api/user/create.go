@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/converter"
-	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
+	"github.com/s0vunia/auth_microservice/internal/converter"
+	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 )
 
 // Create creates a new user.

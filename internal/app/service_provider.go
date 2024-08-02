@@ -12,18 +12,18 @@ import (
 	"github.com/s0vunia/platform_common/pkg/db/transaction"
 
 	redigo "github.com/gomodule/redigo/redis"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache"
-	userCache "github.com/s0vunia/auth_microservices_course_boilerplate/internal/cache/user"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config/env"
+	"github.com/s0vunia/auth_microservice/internal/cache"
+	userCache "github.com/s0vunia/auth_microservice/internal/cache/user"
+	"github.com/s0vunia/auth_microservice/internal/config/env"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/api/user"
+	"github.com/s0vunia/auth_microservice/internal/api/user"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository"
-	logRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/log"
-	userRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/service"
-	userService "github.com/s0vunia/auth_microservices_course_boilerplate/internal/service/user"
+	"github.com/s0vunia/auth_microservice/internal/config"
+	"github.com/s0vunia/auth_microservice/internal/repository"
+	logRepository "github.com/s0vunia/auth_microservice/internal/repository/log"
+	userRepository "github.com/s0vunia/auth_microservice/internal/repository/user"
+	"github.com/s0vunia/auth_microservice/internal/service"
+	userService "github.com/s0vunia/auth_microservice/internal/service/user"
 )
 
 type serviceProvider struct {

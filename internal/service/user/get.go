@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 func (s serv) Get(ctx context.Context, id int64) (*model.User, error) {

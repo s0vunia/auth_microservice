@@ -1,8 +1,8 @@
 package converter
 
 import (
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
-	modelRepo "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
+	modelRepo "github.com/s0vunia/auth_microservice/internal/repository/user/model"
 )
 
 // ToUserFromRepo converts a User object from the model package to a User object from the repository package.
