@@ -13,6 +13,7 @@ service AuthV1 {
   rpc Get(GetRequest) returns (GetResponse);
   rpc Update(UpdateRequest) returns (google.protobuf.Empty);
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc IsExists(IsExistsRequest) returns (IsExistsResponse);
 }
 
 enum Role {
@@ -34,16 +35,20 @@ message User {
   google.protobuf.Timestamp updated_at = 4;
 }
 
-message UpdateUserInfo {
+message UserUpdate {
   google.protobuf.StringValue name = 1;
   google.protobuf.StringValue email = 2;
   Role role = 3;
 }
 
-message CreateRequest {
+message UserCreate {
   UserInfo info = 1;
   string password = 2;
   string password_confirm = 3;
+}
+
+message CreateRequest {
+  UserCreate userCreate = 1;
 }
 
 message CreateResponse {
@@ -60,9 +65,17 @@ message GetResponse {
 
 message UpdateRequest {
   int64 id = 1;
-  UpdateUserInfo info = 2;
+  UserUpdate userUpdate = 2;
 }
 
 message DeleteRequest {
   int64 id = 1;
+}
+
+message IsExistsRequest {
+  repeated int64 ids = 1;
+}
+
+message IsExistsResponse {
+  bool exists = 1;
 }

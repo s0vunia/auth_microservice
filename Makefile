@@ -20,7 +20,7 @@ generate:
 
 generate-auth-api:
 	mkdir -p pkg/auth_v1
-	$(LOCAL_BIN)/protoc --proto_path api/auth_v1 \
+	protoc --proto_path api/auth_v1 \
 	--go_out=pkg/auth_v1 --go_opt=paths=source_relative \
 	--plugin=protoc-gen-go=bin/protoc-gen-go \
 	--go-grpc_out=pkg/auth_v1 --go-grpc_opt=paths=source_relative \
@@ -37,7 +37,7 @@ local-migration-down:
 	$(LOCAL_BIN)/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
 
 local-docker-compose-up:
-	docker compose up -d --build pg-local migrator-local
+	sudo docker compose up -d --build auth-local pg-local migrator-local
 
 prod-docker-compose-up:
 	docker compose up -d --build pg-prod migrator-prod
