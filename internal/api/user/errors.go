@@ -6,5 +6,6 @@ import (
 )
 
 var (
+	// PasswordConfirmErr err
 	PasswordConfirmErr = status.Error(codes.InvalidArgument, "password and password confirm do not match")
 )
