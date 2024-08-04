@@ -70,7 +70,7 @@ func TestImplementation_Create(t *testing.T) {
 			Id: id,
 		}
 	)
-	defer t.Cleanup(mc.Finish)
+
 	tests := []struct {
 		name            string
 		args            args

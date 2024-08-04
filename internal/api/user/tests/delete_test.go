@@ -3,6 +3,8 @@ package tests
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/gojuno/minimock/v3"
 	"github.com/s0vunia/auth_microservice/internal/api/user"
@@ -11,7 +13,6 @@ import (
 	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"testing"
 )
 
 func TestImplementation_Delete(t *testing.T) {
@@ -37,7 +38,7 @@ func TestImplementation_Delete(t *testing.T) {
 
 		res = &emptypb.Empty{}
 	)
-	defer t.Cleanup(mc.Finish)
+
 	tests := []struct {
 		name            string
 		args            args

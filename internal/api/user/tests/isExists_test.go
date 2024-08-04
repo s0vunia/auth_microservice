@@ -3,13 +3,14 @@ package tests
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/gojuno/minimock/v3"
 	"github.com/s0vunia/auth_microservice/internal/api/user"
 	"github.com/s0vunia/auth_microservice/internal/service"
 	serviceMocks "github.com/s0vunia/auth_microservice/internal/service/mocks"
 	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestImplementation_IsExists(t *testing.T) {
@@ -40,7 +41,7 @@ func TestImplementation_IsExists(t *testing.T) {
 			Exists: false,
 		}
 	)
-	defer t.Cleanup(mc.Finish)
+
 	tests := []struct {
 		name            string
 		args            args

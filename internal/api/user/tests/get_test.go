@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"testing"
+
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/gojuno/minimock/v3"
 	user2 "github.com/s0vunia/auth_microservice/internal/api/user"
@@ -13,7 +15,6 @@ import (
 	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"testing"
 )
 
 func TestImplementation_Get(t *testing.T) {
@@ -68,7 +69,7 @@ func TestImplementation_Get(t *testing.T) {
 			},
 		}
 	)
-	defer t.Cleanup(mc.Finish)
+
 	tests := []struct {
 		name            string
 		args            args

@@ -3,6 +3,8 @@ package tests
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/gojuno/minimock/v3"
 	"github.com/s0vunia/auth_microservice/internal/cache"
@@ -14,7 +16,6 @@ import (
 	"github.com/s0vunia/platform_common/pkg/db"
 	"github.com/s0vunia/platform_common/pkg/db/mocks"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCreate(t *testing.T) {
