@@ -2,9 +2,10 @@ package user
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/s0vunia/auth_microservice/internal/cache/user/converter"
 	"github.com/s0vunia/auth_microservice/internal/model"
-	"strconv"
 )
 
 func (c *cacheImplementation) Create(ctx context.Context, user *model.User) error {

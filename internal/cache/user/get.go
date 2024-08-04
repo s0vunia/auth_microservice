@@ -3,11 +3,12 @@ package user
 import (
 	"context"
 	"errors"
+	"strconv"
+
 	redigo "github.com/gomodule/redigo/redis"
 	"github.com/s0vunia/auth_microservice/internal/cache/user/converter"
 	modelCache "github.com/s0vunia/auth_microservice/internal/cache/user/model"
 	"github.com/s0vunia/auth_microservice/internal/model"
-	"strconv"
 )
 
 func (c *cacheImplementation) Get(ctx context.Context, id int64) (*model.User, error) {
