@@ -11,7 +11,7 @@ require (
 	github.com/gomodule/redigo v1.9.2
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
-	github.com/s0vunia/platform_common v1.0.2
+	github.com/s0vunia/platform_common v1.0.3
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.25.0
 	google.golang.org/grpc v1.65.0

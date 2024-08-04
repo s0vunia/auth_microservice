@@ -142,6 +142,8 @@ github.com/rs/zerolog v1.13.0/go.mod h1:YbFCdg8HfsridGWAh22vktObvhZbQsZXe4/zB0OK
 github.com/rs/zerolog v1.15.0/go.mod h1:xYTKnLHcpfU2225ny5qZjxnj9NvkumZYjJHlAThCjNc=
 github.com/s0vunia/platform_common v1.0.2 h1:LlgOfn0v1qAw9E8i7QvVRJGUMWBT7yzfW1xxjTibOaU=
 github.com/s0vunia/platform_common v1.0.2/go.mod h1:gKW9CqYNZ56YJ9Mc8rFCc6xWFrdW2ftdnu1wWGdF6Yg=
+github.com/s0vunia/platform_common v1.0.3 h1:cp9KpGct/5Z82u3OjGlwpEp9PBbm51U+x2+vNAeoCrk=
+github.com/s0vunia/platform_common v1.0.3/go.mod h1:vZnyS7rJHJj0NO+GjecT48Cub/+uWae8qcv23j7006k=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24/go.mod h1:M+9NzErvs504Cn4c5DxATwIqPbtswREoFCre64PpcG4=
 github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc/go.mod h1:DKyhrW/HYNuLGql+MJL6WCR6knT2jwCFRcu2hWCYk4o=

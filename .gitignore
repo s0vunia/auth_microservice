@@ -3,3 +3,4 @@
 .env
 local.env
 prod.env
+/coverage.out
