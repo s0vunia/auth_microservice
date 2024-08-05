@@ -1,4 +1,4 @@
-package config
+package env
 
 import (
 	"errors"
@@ -9,17 +9,12 @@ const (
 	dsnEnvName = "PG_DSN"
 )
 
-// PGConfig config for PostgreSQL
-type PGConfig interface {
-	DSN() string
-}
-
 type pgConfig struct {
 	dsn string
 }
 
-// NewPGConfig initializes a PostgreSQL configuration.
-func NewPGConfig() (PGConfig, error) {
+// NewPGConfig - creates new pg config
+func NewPGConfig() (*pgConfig, error) {
 	dsn := os.Getenv(dsnEnvName)
 	if len(dsn) == 0 {
 		return nil, errors.New("pg dsn not found")
@@ -30,6 +25,7 @@ func NewPGConfig() (PGConfig, error) {
 	}, nil
 }
 
+// DSN - creates dsn from config
 func (cfg *pgConfig) DSN() string {
 	return cfg.dsn
 }

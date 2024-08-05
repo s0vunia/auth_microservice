@@ -3,10 +3,11 @@ package user
 import (
 	"context"
 
+	"github.com/s0vunia/platform_common/pkg/db"
+
 	sq "github.com/Masterminds/squirrel"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user/converter"
+	"github.com/s0vunia/auth_microservice/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/repository/user/converter"
 )
 
 func (r *repo) Create(ctx context.Context, userCreate *model.UserCreate) (int64, error) {

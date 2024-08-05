@@ -1,8 +1,8 @@
 package user
 
 import (
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/service"
-	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
+	"github.com/s0vunia/auth_microservice/internal/service"
+	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 )
 
 // Implementation represents a user API implementation.

@@ -4,27 +4,42 @@ import (
 	"context"
 	"log"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/api/user"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db/pg"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db/transaction"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/closer"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository"
-	logRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/log"
-	userRepository "github.com/s0vunia/auth_microservices_course_boilerplate/internal/repository/user"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/service"
-	userService "github.com/s0vunia/auth_microservices_course_boilerplate/internal/service/user"
+	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
+	"github.com/s0vunia/platform_common/pkg/cache/redis"
+	"github.com/s0vunia/platform_common/pkg/closer"
+	"github.com/s0vunia/platform_common/pkg/db"
+	"github.com/s0vunia/platform_common/pkg/db/pg"
+	"github.com/s0vunia/platform_common/pkg/db/transaction"
+
+	redigo "github.com/gomodule/redigo/redis"
+	"github.com/s0vunia/auth_microservice/internal/cache"
+	userCache "github.com/s0vunia/auth_microservice/internal/cache/user"
+	"github.com/s0vunia/auth_microservice/internal/config/env"
+
+	"github.com/s0vunia/auth_microservice/internal/api/user"
+
+	"github.com/s0vunia/auth_microservice/internal/config"
+	"github.com/s0vunia/auth_microservice/internal/repository"
+	logRepository "github.com/s0vunia/auth_microservice/internal/repository/log"
+	userRepository "github.com/s0vunia/auth_microservice/internal/repository/user"
+	"github.com/s0vunia/auth_microservice/internal/service"
+	userService "github.com/s0vunia/auth_microservice/internal/service/user"
 )
 
 type serviceProvider struct {
-	pgConfig   config.PGConfig
-	grpcConfig config.GRPCConfig
+	pgConfig    config.PGConfig
+	grpcConfig  config.GRPCConfig
+	redisConfig config.RedisConfig
 
-	dbClient       db.Client
-	txManager      db.TxManager
+	dbClient  db.Client
+	txManager db.TxManager
+
+	redisPool   *redigo.Pool
+	redisClient cacheCl.Client
+
 	userRepository repository.UserRepository
 	logsRepository repository.LogRepository
+	cache          cache.UserCache
 
 	userService service.UserService
 
@@ -37,7 +52,7 @@ func newServiceProvider() *serviceProvider {
 
 func (s *serviceProvider) PGConfig() config.PGConfig {
 	if s.pgConfig == nil {
-		cfg, err := config.NewPGConfig()
+		cfg, err := env.NewPGConfig()
 		if err != nil {
 			log.Fatalf("failed to get pg config: %s", err.Error())
 		}
@@ -50,7 +65,7 @@ func (s *serviceProvider) PGConfig() config.PGConfig {
 
 func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
-		cfg, err := config.NewGRPCConfig()
+		cfg, err := env.NewGRPCConfig()
 		if err != nil {
 			log.Fatalf("failed to get grpc config: %s", err.Error())
 		}
@@ -59,6 +74,19 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	}
 
 	return s.grpcConfig
+}
+
+func (s *serviceProvider) RedisConfig() config.RedisConfig {
+	if s.redisConfig == nil {
+		cfg, err := env.NewRedisConfig()
+		if err != nil {
+			log.Fatalf("failed to get redis config: %s", err.Error())
+		}
+
+		s.redisConfig = cfg
+	}
+
+	return s.redisConfig
 }
 
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
@@ -88,6 +116,28 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	return s.txManager
 }
 
+func (s *serviceProvider) RedisPool() *redigo.Pool {
+	if s.redisPool == nil {
+		s.redisPool = &redigo.Pool{
+			MaxIdle:     s.RedisConfig().MaxIdle(),
+			IdleTimeout: s.RedisConfig().IdleTimeout(),
+			DialContext: func(ctx context.Context) (redigo.Conn, error) {
+				return redigo.DialContext(ctx, "tcp", s.RedisConfig().Address())
+			},
+		}
+	}
+
+	return s.redisPool
+}
+
+func (s *serviceProvider) RedisClient() cacheCl.Client {
+	if s.redisClient == nil {
+		s.redisClient = redis.NewClient(s.RedisPool(), s.RedisConfig().ConnectionTimeout())
+	}
+
+	return s.redisClient
+}
+
 func (s *serviceProvider) UserRepository(ctx context.Context) repository.UserRepository {
 	if s.userRepository == nil {
 		s.userRepository = userRepository.NewRepository(s.DBClient(ctx))
@@ -104,11 +154,19 @@ func (s *serviceProvider) LogsRepository(ctx context.Context) repository.LogRepo
 	return s.logsRepository
 }
 
+func (s *serviceProvider) Cache() cache.UserCache {
+	if s.cache == nil {
+		s.cache = userCache.NewCache(s.RedisClient())
+	}
+	return s.cache
+}
+
 func (s *serviceProvider) NoteService(ctx context.Context) service.UserService {
 	if s.userService == nil {
 		s.userService = userService.NewService(
 			s.UserRepository(ctx),
 			s.LogsRepository(ctx),
+			s.Cache(),
 			s.TxManager(ctx),
 		)
 	}

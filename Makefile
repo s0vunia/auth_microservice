@@ -37,7 +37,20 @@ local-migration-down:
 	$(LOCAL_BIN)/goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
 
 local-docker-compose-up:
-	sudo docker compose up -d --build auth-local pg-local migrator-local
+	sudo docker compose up -d --build auth-local pg-local migrator-local redis-local
 
 prod-docker-compose-up:
 	docker compose up -d --build pg-prod migrator-prod
+
+test:
+	go clean -testcache
+	go test ./... -covermode count -coverpkg=github.com/s0vunia/auth_microservice/internal/service/...,github.com/s0vunia/auth_microservice/internal/api/... -count 5
+
+test-coverage:
+	go clean -testcache
+	go test ./... -coverprofile=coverage.tmp.out -covermode count -coverpkg=github.com/s0vunia/auth_microservice/internal/service/...,github.com/s0vunia/auth_microservice/internal/api/... -count 5
+	grep -v 'mocks\|config' coverage.tmp.out  > coverage.out
+	rm coverage.tmp.out
+	go tool cover -html=coverage.out;
+	go tool cover -func=./coverage.out | grep "total";
+	grep -sqFx "/coverage.out" .gitignore || echo "/coverage.out" >> .gitignore

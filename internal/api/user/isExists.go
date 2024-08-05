@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
+	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 )
 
 // IsExists checks if a user exists.

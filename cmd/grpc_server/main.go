@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/app"
+	"github.com/s0vunia/auth_microservice/internal/app"
 )
 
 func main() {

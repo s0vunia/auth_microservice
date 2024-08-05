@@ -3,9 +3,10 @@ package log
 import (
 	"context"
 
+	"github.com/s0vunia/platform_common/pkg/db"
+
 	sq "github.com/Masterminds/squirrel"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 // Create creates a new log.

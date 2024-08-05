@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/s0vunia/platform_common/pkg/db"
+
 	sq "github.com/Masterminds/squirrel"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/client/db"
 )
 
 func (r *repo) IsExists(ctx context.Context, ids []int64) (bool, error) {

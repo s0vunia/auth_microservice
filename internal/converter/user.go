@@ -1,8 +1,8 @@
 package converter
 
 import (
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
-	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
+	"github.com/s0vunia/auth_microservice/internal/model"
+	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

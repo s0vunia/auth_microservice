@@ -6,14 +6,15 @@ import (
 	"net"
 	"os"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/closer"
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/config"
+	"github.com/s0vunia/platform_common/pkg/closer"
+
+	"github.com/s0vunia/auth_microservice/internal/config"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
-	desc "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1"
+	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 )
 
 var (

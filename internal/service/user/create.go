@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/s0vunia/auth_microservices_course_boilerplate/internal/model"
+	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
 func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, error) {
@@ -12,6 +12,19 @@ func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, 
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 		id, errTx = s.userRepository.Create(ctx, userCreate)
+		if errTx != nil {
+			return errTx
+		}
+
+		errTx = s.cache.Create(ctx, &model.User{
+			ID: id,
+			Info: model.UserInfo{
+				Name:  userCreate.Name,
+				Email: userCreate.Email,
+				Role:  userCreate.Role,
+			},
+		})
+
 		if errTx != nil {
 			return errTx
 		}
