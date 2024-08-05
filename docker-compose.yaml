@@ -15,6 +15,7 @@ services:
       dockerfile: Dockerfile
     ports:
         - "50051:50051"
+        - "8080:8080"
     depends_on:
       - pg-local
       - redis-local

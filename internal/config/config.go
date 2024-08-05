@@ -16,6 +16,12 @@ type PGConfig interface {
 	DSN() string
 }
 
+// HTTPConfig - config for HTTP server
+type HTTPConfig interface {
+	Address() string
+	ReadHeaderTimeout() time.Duration
+}
+
 // RedisConfig - config for Redis
 type RedisConfig interface {
 	Address() string
