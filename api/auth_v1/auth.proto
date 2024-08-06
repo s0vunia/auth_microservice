@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1;auth_v1";
 
@@ -46,8 +47,8 @@ enum Role {
 }
 
 message UserInfo {
-  string name = 1;
-  string email = 2;
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string email = 2 [(validate.rules).string.email = true];
   Role role = 3;
 }
 
@@ -59,8 +60,8 @@ message User {
 }
 
 message UserUpdate {
-  google.protobuf.StringValue name = 1;
-  google.protobuf.StringValue email = 2;
+  google.protobuf.StringValue name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  google.protobuf.StringValue email = 2 [(validate.rules).string.email = true];
   Role role = 3;
 }
 
