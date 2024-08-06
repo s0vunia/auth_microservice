@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ main, master, hw4 ]
+    branches: [ main, master, features/* ]
   pull_request:
-    branches: [ main, master, hw4 ]
+    branches: [ main, master, features/* ]
 
 env:
   REGISTRY: "auth-service.cr.cloud.ru"
@@ -39,6 +39,9 @@ jobs:
           echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
           echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          echo HTTP_PORT=${{ secrets.HTTP_PORT }} >> prod.env
+          echo HTTP_HOST=${{ secrets.HTTP_HOST }} >> prod.env
+          echo READ_HEADER_TIMEOUT_SEC=${{ secrets.READ_HEADER_TIMEOUT_SEC }} >> prod.env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> prod.env
           echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
