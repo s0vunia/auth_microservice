@@ -13,6 +13,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.21.0
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
+	github.com/rakyll/statik v0.1.7
 	github.com/rs/cors v1.11.0
 	github.com/s0vunia/platform_common v1.0.3
 	github.com/stretchr/testify v1.8.4

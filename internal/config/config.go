@@ -22,6 +22,11 @@ type HTTPConfig interface {
 	ReadHeaderTimeout() time.Duration
 }
 
+// SwaggerConfig - config for swagger
+type SwaggerConfig interface {
+	Address() string
+}
+
 // RedisConfig - config for Redis
 type RedisConfig interface {
 	Address() string

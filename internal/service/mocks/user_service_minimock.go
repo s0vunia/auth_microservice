@@ -2,7 +2,7 @@
 
 package mocks
 
-//go:generate minimock -i github.com/s0vunia/auth_microservices_course_boilerplate/internal/service.UserService -o user_service_minimock.go -n UserServiceMock -p mocks
+//go:generate minimock -i github.com/s0vunia/auth_microservice/internal/service.UserService -o user_service_minimock.go -n UserServiceMock -p mocks
 
 import (
 	"context"

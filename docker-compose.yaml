@@ -16,6 +16,7 @@ services:
     ports:
         - "50051:50051"
         - "8080:8080"
+        - "8090:8090"
     depends_on:
       - pg-local
       - redis-local
