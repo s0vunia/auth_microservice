@@ -15,6 +15,7 @@ env:
 jobs:
   image-build-and-push:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout master
@@ -182,3 +183,17 @@ jobs:
 
           # Optional: The mode to install golangci-lint. It can be 'binary' or 'goinstall'.
           # install-mode: "goinstall"
+
+  test:
+    needs: linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+          cache: false
+      - name: Get dependencies
+        run: go get .
+      - name: Run tests
+        run: go test ./...
