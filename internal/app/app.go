@@ -56,14 +56,14 @@ func NewApp(ctx context.Context) (*App, error) {
 }
 
 // Run runs the app.
-func (a *App) Run() error {
+func (a *App) Run(ctx context.Context) error {
 	defer func() {
 		closer.CloseAll()
 		closer.Wait()
 	}()
 
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(4)
 
 	go func() {
 		defer wg.Done()
@@ -89,6 +89,15 @@ func (a *App) Run() error {
 		err := a.runSwaggerServer()
 		if err != nil {
 			log.Fatalf("failed to run Swagger server: %v", err)
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+
+		err := a.serviceProvider.UserSaverConsumer(ctx).RunConsumer(ctx)
+		if err != nil {
+			log.Fatalf("failed to run consumer: %v", err)
 		}
 	}()
 

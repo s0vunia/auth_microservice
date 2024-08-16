@@ -14,3 +14,8 @@ type UserService interface {
 	Delete(ctx context.Context, id int64) error
 	IsExists(ctx context.Context, ids []int64) (bool, error)
 }
+
+// ConsumerService represents a service for consumer entities.
+type ConsumerService interface {
+	RunConsumer(ctx context.Context) error
+}
