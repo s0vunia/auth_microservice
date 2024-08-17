@@ -30,6 +30,8 @@ services:
       - CONFIG_PATH=prod.env
     ports:
       - "50052:50052"
+      - "8080:8080"
+      - "8090:8090"
     depends_on:
       - pg-prod
       - redis-prod
