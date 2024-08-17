@@ -50,6 +50,8 @@ jobs:
           echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
           echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
+          echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
+          echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
           cat prod.env
 
       - name: Build and Push Docker Image
@@ -97,6 +99,8 @@ jobs:
           echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
           echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
+          echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
+          echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
           cat prod.env
 
       - name: Copy files to server using SSH key
