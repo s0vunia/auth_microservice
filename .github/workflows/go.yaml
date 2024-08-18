@@ -43,6 +43,11 @@ jobs:
           echo HTTP_HOST=${{ secrets.HTTP_HOST }} >> prod.env
           echo HTTP_PORT=${{ secrets.HTTP_PORT }} >> prod.env
           echo READ_HEADER_TIMEOUT_SEC=${{ secrets.READ_HEADER_TIMEOUT_SEC }} >> prod.env
+          echo REFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} >> prod.env
+          echo REFRESH_TOKEN_EXPIRATION_SEC=${{ secrets.REFRESH_TOKEN_EXPIRATION_SEC }} >> prod.env
+          echo ACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} >> prod.env
+          echo ACCESS_TOKEN_EXPIRATION_SEC=${{ secrets.ACCESS_TOKEN_EXPIRATION_SEC }} >> prod.env
+          echo AUTH_PREFIX=${{ secrets.AUTH_PREFIX }} >> prod.env
           echo SWAGGER_HOST=${{ secrets.SWAGGER_HOST }} >> prod.env
           echo SWAGGER_PORT=${{ secrets.SWAGGER_PORT }} >> prod.env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
@@ -92,6 +97,11 @@ jobs:
           echo HTTP_HOST=${{ secrets.HTTP_HOST }} >> prod.env
           echo HTTP_PORT=${{ secrets.HTTP_PORT }} >> prod.env
           echo READ_HEADER_TIMEOUT_SEC=${{ secrets.READ_HEADER_TIMEOUT_SEC }} >> prod.env
+          echo REFRESH_TOKEN_SECRET_KEY=${{ secrets.REFRESH_TOKEN_SECRET_KEY }} >> prod.env
+          echo REFRESH_TOKEN_EXPIRATION_SEC=${{ secrets.REFRESH_TOKEN_EXPIRATION_SEC }} >> prod.env
+          echo ACCESS_TOKEN_SECRET_KEY=${{ secrets.ACCESS_TOKEN_SECRET_KEY }} >> prod.env
+          echo ACCESS_TOKEN_EXPIRATION_SEC=${{ secrets.ACCESS_TOKEN_EXPIRATION_SEC }} >> prod.env
+          echo AUTH_PREFIX=${{ secrets.AUTH_PREFIX }} >> prod.env
           echo SWAGGER_HOST=${{ secrets.SWAGGER_HOST }} >> prod.env
           echo SWAGGER_PORT=${{ secrets.SWAGGER_PORT }} >> prod.env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
