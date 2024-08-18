@@ -23,6 +23,14 @@ type HTTPConfig interface {
 	ReadHeaderTimeout() time.Duration
 }
 
+type JWTConfig interface {
+	AccessSecretKey() string
+	AccessExpiration() time.Duration
+	RefreshSecretKey() string
+	RefreshExpiration() time.Duration
+	AuthPrefix() string
+}
+
 // SwaggerConfig - config for swagger
 type SwaggerConfig interface {
 	Address() string
