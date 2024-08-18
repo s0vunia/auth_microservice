@@ -5,12 +5,20 @@ import (
 	"fmt"
 
 	"github.com/s0vunia/auth_microservice/internal/model"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, error) {
 	var id int64
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
+
+		password, errTx := bcrypt.GenerateFromPassword([]byte(userCreate.Password), 10)
+		if errTx != nil {
+			return errTx
+		}
+		userCreate.Password = string(password)
+
 		id, errTx = s.userRepository.Create(ctx, userCreate)
 		if errTx != nil {
 			return errTx
