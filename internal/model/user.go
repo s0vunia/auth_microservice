@@ -35,6 +35,12 @@ type UserUpdate struct {
 	Role  Role
 }
 
+// UserLogin represents a user login entity with ID and Password fields.
+type UserLogin struct {
+	ID       int64
+	Password string
+}
+
 // Role represents a user role
 type Role int32
 
