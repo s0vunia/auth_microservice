@@ -23,6 +23,7 @@ type HTTPConfig interface {
 	ReadHeaderTimeout() time.Duration
 }
 
+// JWTConfig - config for JWT
 type JWTConfig interface {
 	AccessSecretKey() string
 	AccessExpiration() time.Duration

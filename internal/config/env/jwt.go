@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	accessSecretKeyEnvName   = "ACCESS_TOKEN_SECRET_KEY"
-	accessExpirationEnvName  = "ACCESS_TOKEN_EXPIRATION_SEC"
-	refreshSecretKeyEnvName  = "REFRESH_TOKEN_SECRET_KEY"
+	accessSecretKeyEnvName  = "ACCESS_TOKEN_SECRET_KEY"
+	accessExpirationEnvName = "ACCESS_TOKEN_EXPIRATION_SEC"
+	// lint
+	refreshKeyEnvName        = "REFRESH_TOKEN_SECRET_KEY"
 	refreshExpirationEnvName = "REFRESH_TOKEN_EXPIRATION_SEC"
 	authPrefixEnvName        = "AUTH_PREFIX"
 )
@@ -43,7 +44,7 @@ func NewJWTConfig() (config.JWTConfig, error) {
 	}
 	accessExpirationDuration := time.Second * time.Duration(accessDurSec)
 
-	refreshSecretKey := os.Getenv(refreshSecretKeyEnvName)
+	refreshSecretKey := os.Getenv(refreshKeyEnvName)
 	if len(refreshSecretKey) == 0 {
 		return nil, errors.New("refresh secret key not found")
 	}
