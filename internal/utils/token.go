@@ -8,6 +8,7 @@ import (
 	"github.com/s0vunia/auth_microservice/internal/model"
 )
 
+// GenerateToken generates jwt token
 func GenerateToken(user model.User, secretKey []byte, duration time.Duration) (string, error) {
 	claims := model.UserClaims{
 		StandardClaims: jwt.StandardClaims{
@@ -22,6 +23,7 @@ func GenerateToken(user model.User, secretKey []byte, duration time.Duration) (s
 	return token.SignedString(secretKey)
 }
 
+// VerifyToken verifies jwt token
 func VerifyToken(tokenStr string, secretKey []byte) (*model.UserClaims, error) {
 	token, err := jwt.ParseWithClaims(
 		tokenStr,
