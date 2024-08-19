@@ -160,9 +160,6 @@ jobs:
             # Deploy services defined in docker-compose.yml
             sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui 
 
-            # Optionally, remove the copied docker-compose.yml file
-            sudo rm docker-compose.yaml
-
   linter:
     name: lint
     runs-on: ubuntu-latest
