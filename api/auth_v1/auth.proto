@@ -5,15 +5,62 @@ package auth_v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/s0vunia/auth_microservices_course_boilerplate/pkg/auth_v1;auth_v1";
 
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Auth API"
+    version: "1.0.0"
+    contact: {
+      name: "Dmitriy Burin"
+      email: "hahahihi@mail.com"
+    };
+  };
+
+  host: "87.242.119.23:8080",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json",
+};
+
 service AuthV1 {
-  rpc Create(CreateRequest) returns (CreateResponse);
-  rpc Get(GetRequest) returns (GetResponse);
-  rpc Update(UpdateRequest) returns (google.protobuf.Empty);
-  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
-  rpc IsExists(IsExistsRequest) returns (IsExistsResponse);
+  // Создает нового пользователя
+  rpc Create(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post: "/user/v1/create"
+      body: "*"
+    };
+  }
+  // Возвращает информацию о пользователе
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/user/v1"
+    };
+  }
+  // Обновляет информацию о пользователе
+  rpc Update(UpdateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/user/v1"
+      body: "*"
+    };
+  }
+  // Удаляет пользователя
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user/v1"
+    };
+  }
+  // Проверяет существование пользователя
+  rpc IsExists(IsExistsRequest) returns (IsExistsResponse) {
+    option (google.api.http) = {
+      get: "/user/v1/is_exists"
+    };
+  }
 }
 
 enum Role {
@@ -23,8 +70,8 @@ enum Role {
 }
 
 message UserInfo {
-  string name = 1;
-  string email = 2;
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string email = 2 [(validate.rules).string.email = true];
   Role role = 3;
 }
 
@@ -36,8 +83,8 @@ message User {
 }
 
 message UserUpdate {
-  google.protobuf.StringValue name = 1;
-  google.protobuf.StringValue email = 2;
+  google.protobuf.StringValue name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  google.protobuf.StringValue email = 2 [(validate.rules).string.email = true];
   Role role = 3;
 }
 

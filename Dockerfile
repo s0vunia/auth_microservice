@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 RUN go mod download
-RUN go build -o ./bin/crud_server cmd/grpc_server/main.go
+RUN go build -o ./bin/crud_server cmd/worker/main.go
 
 FROM alpine:latest
 

@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ main, master, hw4 ]
+    branches: [ main, master, features/* ]
   pull_request:
-    branches: [ main, master, hw4 ]
+    branches: [ main, master, features/* ]
 
 env:
   REGISTRY: "auth-service.cr.cloud.ru"
@@ -15,6 +15,7 @@ env:
 jobs:
   image-build-and-push:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout master
@@ -39,11 +40,18 @@ jobs:
           echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
           echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          echo HTTP_HOST=${{ secrets.HTTP_HOST }} >> prod.env
+          echo HTTP_PORT=${{ secrets.HTTP_PORT }} >> prod.env
+          echo READ_HEADER_TIMEOUT_SEC=${{ secrets.READ_HEADER_TIMEOUT_SEC }} >> prod.env
+          echo SWAGGER_HOST=${{ secrets.SWAGGER_HOST }} >> prod.env
+          echo SWAGGER_PORT=${{ secrets.SWAGGER_PORT }} >> prod.env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> prod.env
           echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
           echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
+          echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
+          echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
           cat prod.env
 
       - name: Build and Push Docker Image
@@ -81,11 +89,18 @@ jobs:
           echo MIGRATION_DIR=${{ secrets.MIGRATION_DIR }} >> prod.env
           echo GRPC_PORT=${{ secrets.GRPC_PORT }} >> prod.env
           echo GRPC_HOST=${{ secrets.GRPC_HOST }} >> prod.env
+          echo HTTP_HOST=${{ secrets.HTTP_HOST }} >> prod.env
+          echo HTTP_PORT=${{ secrets.HTTP_PORT }} >> prod.env
+          echo READ_HEADER_TIMEOUT_SEC=${{ secrets.READ_HEADER_TIMEOUT_SEC }} >> prod.env
+          echo SWAGGER_HOST=${{ secrets.SWAGGER_HOST }} >> prod.env
+          echo SWAGGER_PORT=${{ secrets.SWAGGER_PORT }} >> prod.env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> prod.env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> prod.env
           echo REDIS_CONNECTION_TIMEOUT_SEC=${{ secrets.REDIS_CONNECTION_TIMEOUT_SEC }} >> prod.env
           echo REDIS_MAX_IDLE=${{ secrets.REDIS_MAX_IDLE }} >> prod.env
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
+          echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
+          echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
           cat prod.env
 
       - name: Copy files to server using SSH key
@@ -133,7 +148,7 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> .env
             
             # Deploy services defined in docker-compose.yml
-            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod
+            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui 
 
             # Optionally, remove the copied docker-compose.yml file
             sudo rm docker-compose.yaml
@@ -179,3 +194,15 @@ jobs:
 
           # Optional: The mode to install golangci-lint. It can be 'binary' or 'goinstall'.
           # install-mode: "goinstall"
+
+  test:
+    needs: linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+          cache: false
+      - name: Run tests
+        run: go test ./...

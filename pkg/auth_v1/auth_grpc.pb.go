@@ -23,10 +23,15 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthV1Client interface {
+	// Создает нового пользователя
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	// Возвращает информацию о пользователе
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	// Обновляет информацию о пользователе
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Удаляет пользователя
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Проверяет существование пользователя
 	IsExists(ctx context.Context, in *IsExistsRequest, opts ...grpc.CallOption) (*IsExistsResponse, error)
 }
 
@@ -87,10 +92,15 @@ func (c *authV1Client) IsExists(ctx context.Context, in *IsExistsRequest, opts .
 // All implementations must embed UnimplementedAuthV1Server
 // for forward compatibility
 type AuthV1Server interface {
+	// Создает нового пользователя
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	// Возвращает информацию о пользователе
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	// Обновляет информацию о пользователе
 	Update(context.Context, *UpdateRequest) (*emptypb.Empty, error)
+	// Удаляет пользователя
 	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
+	// Проверяет существование пользователя
 	IsExists(context.Context, *IsExistsRequest) (*IsExistsResponse, error)
 	mustEmbedUnimplementedAuthV1Server()
 }
