@@ -3,18 +3,22 @@ package app
 import (
 	"context"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"os"
 	"sync"
 
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/cors"
 	"github.com/s0vunia/auth_microservice/internal/interceptor"
+	"github.com/s0vunia/auth_microservice/internal/logger"
 	descAccess "github.com/s0vunia/auth_microservice/pkg/access_v1"
 	descAuth "github.com/s0vunia/auth_microservice/pkg/auth_v1"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 
 	// nolint
 	_ "github.com/s0vunia/auth_microservice/statik"
@@ -64,6 +68,9 @@ func (a *App) Run(ctx context.Context) error {
 		closer.Wait()
 	}()
 
+	a.initLogger()
+	logger.Info(a.serviceProvider.LoggerConfig().FileName())
+
 	wg := sync.WaitGroup{}
 	wg.Add(4)
 
@@ -72,7 +79,10 @@ func (a *App) Run(ctx context.Context) error {
 
 		err := a.runGRPCServer()
 		if err != nil {
-			log.Fatalf("failed to run GRPC server: %v", err)
+			logger.Fatal(
+				"failed to run GRPC server",
+				zap.Error(err),
+			)
 		}
 	}()
 
@@ -81,7 +91,10 @@ func (a *App) Run(ctx context.Context) error {
 
 		err := a.runHTTPServer()
 		if err != nil {
-			log.Fatalf("failed to run HTTP server: %v", err)
+			logger.Fatal(
+				"failed to run HTTP server",
+				zap.Error(err),
+			)
 		}
 	}()
 
@@ -90,7 +103,10 @@ func (a *App) Run(ctx context.Context) error {
 
 		err := a.runSwaggerServer()
 		if err != nil {
-			log.Fatalf("failed to run Swagger server: %v", err)
+			logger.Fatal(
+				"failed to run Swagger server",
+				zap.Error(err),
+			)
 		}
 	}()
 
@@ -99,7 +115,10 @@ func (a *App) Run(ctx context.Context) error {
 
 		err := a.serviceProvider.UserSaverConsumer(ctx).RunConsumer(ctx)
 		if err != nil {
-			log.Fatalf("failed to run consumer: %v", err)
+			logger.Fatal(
+				"failed to run user saver consumer",
+				zap.Error(err),
+			)
 		}
 	}()
 
@@ -144,7 +163,12 @@ func (a *App) initServiceProvider(_ context.Context) error {
 func (a *App) initGRPCServer(ctx context.Context) error {
 	a.grpcServer = grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
-		grpc.UnaryInterceptor(interceptor.ValidateInterceptor),
+		grpc.UnaryInterceptor(
+			grpcMiddleware.ChainUnaryServer(
+				interceptor.LogInterceptor,
+				interceptor.ValidateInterceptor,
+			),
+		),
 	)
 
 	reflection.Register(a.grpcServer)
@@ -204,7 +228,9 @@ func (a *App) initSwaggerServer(_ context.Context) error {
 }
 
 func (a *App) runGRPCServer() error {
-	log.Printf("GRPC server is running on %s", a.serviceProvider.GRPCConfig().Address())
+	logger.Info("GRPC server is running",
+		zap.String("address", a.serviceProvider.GRPCConfig().Address()),
+	)
 
 	list, err := net.Listen("tcp", a.serviceProvider.GRPCConfig().Address())
 	if err != nil {
@@ -220,7 +246,9 @@ func (a *App) runGRPCServer() error {
 }
 
 func (a *App) runHTTPServer() error {
-	log.Printf("HTTP server is running on %s", a.serviceProvider.HTTPConfig().Address())
+	logger.Info("HTTP server is running",
+		zap.String("address", a.serviceProvider.HTTPConfig().Address()),
+	)
 
 	err := a.httpServer.ListenAndServe()
 	if err != nil {
@@ -230,7 +258,9 @@ func (a *App) runHTTPServer() error {
 	return nil
 }
 func (a *App) runSwaggerServer() error {
-	log.Printf("Swagger server is running on %s", a.serviceProvider.SwaggerConfig().Address())
+	logger.Info("Swagger server is running",
+		zap.String("address", a.serviceProvider.SwaggerConfig().Address()),
+	)
 
 	err := a.swaggerServer.ListenAndServe()
 	if err != nil {
@@ -242,7 +272,10 @@ func (a *App) runSwaggerServer() error {
 
 func serveSwaggerFile(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
-		log.Printf("Serving swagger file: %s", path)
+		logger.Info(
+			"Serve swagger file",
+			zap.String("path", path),
+		)
 
 		statikFs, err := fs.New()
 		if err != nil {
@@ -250,7 +283,10 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			return
 		}
 
-		log.Printf("Open swagger file: %s", path)
+		logger.Info(
+			"Get swagger file",
+			zap.String("path", path),
+		)
 
 		file, err := statikFs.Open(path)
 		if err != nil {
@@ -265,7 +301,10 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			}
 		}(file)
 
-		log.Printf("Read swagger file: %s", path)
+		logger.Info(
+			"Read swagger file",
+			zap.String("path", path),
+		)
 
 		content, err := io.ReadAll(file)
 		if err != nil {
@@ -273,7 +312,10 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			return
 		}
 
-		log.Printf("Write swagger file: %s", path)
+		logger.Info(
+			"Serve swagger file",
+			zap.String("path", path),
+		)
 
 		w.Header().Set("Content-Type", "application/json")
 		_, err = w.Write(content)
@@ -282,6 +324,46 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			return
 		}
 
-		log.Printf("Served swagger file: %s", path)
+		logger.Info(
+			"Serve swagger file",
+			zap.String("path", path),
+		)
 	}
+}
+
+func (a *App) initLogger() {
+	logger.Init(a.getCore(a.getAtomicLevel()))
+}
+
+func (a *App) getCore(level zap.AtomicLevel) zapcore.Core {
+	stdout := zapcore.AddSync(os.Stdout)
+
+	file := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   a.serviceProvider.LoggerConfig().FileName(),
+		MaxSize:    a.serviceProvider.LoggerConfig().MaxSize(), // megabytes
+		MaxBackups: a.serviceProvider.LoggerConfig().MaxBackups(),
+		MaxAge:     a.serviceProvider.LoggerConfig().MaxAge(), // days
+	})
+	productionCfg := zap.NewProductionEncoderConfig()
+	productionCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	developmentCfg := zap.NewDevelopmentEncoderConfig()
+	developmentCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+	consoleEncoder := zapcore.NewConsoleEncoder(developmentCfg)
+	fileEncoder := zapcore.NewJSONEncoder(productionCfg)
+
+	return zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, stdout, level),
+		zapcore.NewCore(fileEncoder, file, level),
+	)
+}
+
+func (a *App) getAtomicLevel() zap.AtomicLevel {
+	var level zapcore.Level
+	if err := level.Set(a.serviceProvider.LoggerConfig().Level()); err != nil {
+		logger.Fatal("failed to set log level", zap.Error(err))
+	}
+
+	return zap.NewAtomicLevelAt(level)
 }

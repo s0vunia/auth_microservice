@@ -17,6 +17,8 @@ services:
       - "50051:50051"
       - "8080:8080"
       - "8090:8090"
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - pg-local
       - redis-local
@@ -32,6 +34,8 @@ services:
       - "50052:50052"
       - "8080:8080"
       - "8090:8090"
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - pg-prod
       - redis-prod

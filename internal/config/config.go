@@ -57,6 +57,15 @@ type KafkaConsumerConfig interface {
 	Config() *sarama.Config
 }
 
+// LoggerConfig - config for logger
+type LoggerConfig interface {
+	Level() string
+	FileName() string
+	MaxSize() int
+	MaxAge() int
+	MaxBackups() int
+}
+
 // Load - loads config from .env
 func Load(path string) error {
 	err := godotenv.Load(path)

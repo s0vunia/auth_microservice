@@ -2,11 +2,11 @@ package app
 
 import (
 	"context"
-	"log"
 
 	"github.com/IBM/sarama"
 	accessImplem "github.com/s0vunia/auth_microservice/internal/api/access"
 	"github.com/s0vunia/auth_microservice/internal/api/auth"
+	"github.com/s0vunia/auth_microservice/internal/logger"
 	userSaverConsumer "github.com/s0vunia/auth_microservice/internal/service/consumer/user_saver"
 	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
 	"github.com/s0vunia/platform_common/pkg/cache/redis"
@@ -15,6 +15,7 @@ import (
 	"github.com/s0vunia/platform_common/pkg/db/pg"
 	"github.com/s0vunia/platform_common/pkg/db/transaction"
 	"github.com/s0vunia/platform_common/pkg/kafka"
+	"go.uber.org/zap"
 
 	redigo "github.com/gomodule/redigo/redis"
 	"github.com/s0vunia/auth_microservice/internal/cache"
@@ -42,6 +43,7 @@ type serviceProvider struct {
 	swaggerConfig       config.SwaggerConfig
 	redisConfig         config.RedisConfig
 	kafkaConsumerConfig config.KafkaConsumerConfig
+	loggerConfig        config.LoggerConfig
 
 	dbClient  db.Client
 	txManager db.TxManager
@@ -76,7 +78,10 @@ func (s *serviceProvider) PGConfig() config.PGConfig {
 	if s.pgConfig == nil {
 		cfg, err := env.NewPGConfig()
 		if err != nil {
-			log.Fatalf("failed to get pg config: %s", err.Error())
+			logger.Fatal(
+				"failed to get pg config",
+				zap.Error(err),
+			)
 		}
 
 		s.pgConfig = cfg
@@ -89,7 +94,10 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := env.NewGRPCConfig()
 		if err != nil {
-			log.Fatalf("failed to get grpc config: %s", err.Error())
+			logger.Fatal(
+				"failed to get grpc config",
+				zap.Error(err),
+			)
 		}
 
 		s.grpcConfig = cfg
@@ -102,7 +110,10 @@ func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
 	if s.httpConfig == nil {
 		cfg, err := env.NewHTTPConfig()
 		if err != nil {
-			log.Fatalf("failed to get http config: %s", err.Error())
+			logger.Fatal(
+				"failed to get http config",
+				zap.Error(err),
+			)
 		}
 
 		s.httpConfig = cfg
@@ -115,7 +126,10 @@ func (s *serviceProvider) JWTConfig() config.JWTConfig {
 	if s.jwtConfig == nil {
 		cfg, err := env.NewJWTConfig()
 		if err != nil {
-			log.Fatalf("failed to get jwt config: %s", err.Error())
+			logger.Fatal(
+				"failed to get jwt config",
+				zap.Error(err),
+			)
 		}
 
 		s.jwtConfig = cfg
@@ -128,7 +142,10 @@ func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
 	if s.swaggerConfig == nil {
 		cfg, err := env.NewSwaggerConfig()
 		if err != nil {
-			log.Fatalf("failed to get swagger config: %s", err.Error())
+			logger.Fatal(
+				"failed to get swagger config",
+				zap.Error(err),
+			)
 		}
 
 		s.swaggerConfig = cfg
@@ -141,7 +158,10 @@ func (s *serviceProvider) RedisConfig() config.RedisConfig {
 	if s.redisConfig == nil {
 		cfg, err := env.NewRedisConfig()
 		if err != nil {
-			log.Fatalf("failed to get redis config: %s", err.Error())
+			logger.Fatal(
+				"failed to get redis config",
+				zap.Error(err),
+			)
 		}
 
 		s.redisConfig = cfg
@@ -154,7 +174,10 @@ func (s *serviceProvider) KafkaConsumerConfig() config.KafkaConsumerConfig {
 	if s.kafkaConsumerConfig == nil {
 		cfg, err := env.NewKafkaConsumerConfig()
 		if err != nil {
-			log.Fatalf("failed to get kafka consumer config: %s", err.Error())
+			logger.Fatal(
+				"failed to get kafka consumer config",
+				zap.Error(err),
+			)
 		}
 
 		s.kafkaConsumerConfig = cfg
@@ -163,16 +186,36 @@ func (s *serviceProvider) KafkaConsumerConfig() config.KafkaConsumerConfig {
 	return s.kafkaConsumerConfig
 }
 
+func (s *serviceProvider) LoggerConfig() config.LoggerConfig {
+	if s.loggerConfig == nil {
+		cfg, err := env.NewLoggerConfig()
+		if err != nil {
+			logger.Fatal(
+				"failed to get logger config",
+				zap.Error(err),
+			)
+		}
+		s.loggerConfig = cfg
+	}
+	return s.loggerConfig
+}
+
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	if s.dbClient == nil {
 		cl, err := pg.New(ctx, s.PGConfig().DSN())
 		if err != nil {
-			log.Fatalf("failed to create db client: %v", err)
+			logger.Fatal(
+				"failed to get db client",
+				zap.Error(err),
+			)
 		}
 
 		err = cl.DB().Ping(ctx)
 		if err != nil {
-			log.Fatalf("ping error: %s", err.Error())
+			logger.Fatal(
+				"failed to ping db",
+				zap.Error(err),
+			)
 		}
 		closer.Add(cl.Close)
 
@@ -334,7 +377,10 @@ func (s *serviceProvider) ConsumerGroup() sarama.ConsumerGroup {
 			s.KafkaConsumerConfig().Config(),
 		)
 		if err != nil {
-			log.Fatalf("failed to create consumer group: %v", err)
+			logger.Fatal(
+				"failed to create consumer group",
+				zap.Error(err),
+			)
 		}
 
 		s.consumerGroup = consumerGroup
