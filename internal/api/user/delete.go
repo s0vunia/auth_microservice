@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
+	desc "github.com/s0vunia/auth_microservice/pkg/user_v1"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 

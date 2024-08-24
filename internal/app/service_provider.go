@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"github.com/IBM/sarama"
+	accessImplem "github.com/s0vunia/auth_microservice/internal/api/access"
+	"github.com/s0vunia/auth_microservice/internal/api/auth"
 	userSaverConsumer "github.com/s0vunia/auth_microservice/internal/service/consumer/user_saver"
 	cacheCl "github.com/s0vunia/platform_common/pkg/cache"
 	"github.com/s0vunia/platform_common/pkg/cache/redis"
@@ -27,6 +29,8 @@ import (
 	logRepository "github.com/s0vunia/auth_microservice/internal/repository/log"
 	userRepository "github.com/s0vunia/auth_microservice/internal/repository/user"
 	"github.com/s0vunia/auth_microservice/internal/service"
+	accessService "github.com/s0vunia/auth_microservice/internal/service/access"
+	authService "github.com/s0vunia/auth_microservice/internal/service/auth"
 	userService "github.com/s0vunia/auth_microservice/internal/service/user"
 )
 
@@ -34,6 +38,7 @@ type serviceProvider struct {
 	pgConfig            config.PGConfig
 	grpcConfig          config.GRPCConfig
 	httpConfig          config.HTTPConfig
+	jwtConfig           config.JWTConfig
 	swaggerConfig       config.SwaggerConfig
 	redisConfig         config.RedisConfig
 	kafkaConsumerConfig config.KafkaConsumerConfig
@@ -48,11 +53,15 @@ type serviceProvider struct {
 	logsRepository repository.LogRepository
 	cache          cache.UserCache
 
-	userService service.UserService
+	userService   service.UserService
+	authService   service.AuthService
+	accessService service.AccessService
 
 	userSaverConsumer service.ConsumerService
 
-	userImpl *user.Implementation
+	userImpl   *user.Implementation
+	authImpl   *auth.Implementation
+	accessImpl *accessImplem.Implementation
 
 	consumer             kafka.Consumer
 	consumerGroup        sarama.ConsumerGroup
@@ -100,6 +109,19 @@ func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
 	}
 
 	return s.httpConfig
+}
+
+func (s *serviceProvider) JWTConfig() config.JWTConfig {
+	if s.jwtConfig == nil {
+		cfg, err := env.NewJWTConfig()
+		if err != nil {
+			log.Fatalf("failed to get jwt config: %s", err.Error())
+		}
+
+		s.jwtConfig = cfg
+	}
+
+	return s.jwtConfig
 }
 
 func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
@@ -213,7 +235,7 @@ func (s *serviceProvider) Cache() cache.UserCache {
 	return s.cache
 }
 
-func (s *serviceProvider) NoteService(ctx context.Context) service.UserService {
+func (s *serviceProvider) UserService(ctx context.Context) service.UserService {
 	if s.userService == nil {
 		s.userService = userService.NewService(
 			s.UserRepository(ctx),
@@ -226,12 +248,59 @@ func (s *serviceProvider) NoteService(ctx context.Context) service.UserService {
 	return s.userService
 }
 
+func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
+	if s.authService == nil {
+		s.authService = authService.NewService(
+			s.UserRepository(ctx),
+			s.LogsRepository(ctx),
+			s.Cache(),
+			s.TxManager(ctx),
+			s.JWTConfig().RefreshSecretKey(),
+			s.JWTConfig().RefreshExpiration(),
+			s.JWTConfig().AccessSecretKey(),
+			s.JWTConfig().AccessExpiration(),
+		)
+	}
+
+	return s.authService
+}
+
+func (s *serviceProvider) AccessService(ctx context.Context) service.AccessService {
+	if s.accessService == nil {
+		s.accessService = accessService.NewService(
+			s.LogsRepository(ctx),
+			s.Cache(),
+			s.TxManager(ctx),
+			s.JWTConfig().AuthPrefix(),
+			s.JWTConfig().AccessSecretKey(),
+		)
+	}
+
+	return s.accessService
+}
+
 func (s *serviceProvider) UserImpl(ctx context.Context) *user.Implementation {
 	if s.userImpl == nil {
-		s.userImpl = user.NewImplementation(s.NoteService(ctx))
+		s.userImpl = user.NewImplementation(s.UserService(ctx))
 	}
 
 	return s.userImpl
+}
+
+func (s *serviceProvider) AuthImpl(ctx context.Context) *auth.Implementation {
+	if s.authImpl == nil {
+		s.authImpl = auth.NewImplementation(s.AuthService(ctx))
+	}
+
+	return s.authImpl
+}
+
+func (s *serviceProvider) AccessImpl(ctx context.Context) *accessImplem.Implementation {
+	if s.accessImpl == nil {
+		s.accessImpl = accessImplem.NewImplementation(s.AccessService(ctx))
+	}
+
+	return s.accessImpl
 }
 
 func (s *serviceProvider) UserSaverConsumer(ctx context.Context) service.ConsumerService {

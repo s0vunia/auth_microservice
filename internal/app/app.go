@@ -13,6 +13,8 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/cors"
 	"github.com/s0vunia/auth_microservice/internal/interceptor"
+	descAccess "github.com/s0vunia/auth_microservice/pkg/access_v1"
+	descAuth "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 
 	// nolint
 	_ "github.com/s0vunia/auth_microservice/statik"
@@ -24,7 +26,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
-	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
+	desc "github.com/s0vunia/auth_microservice/pkg/user_v1"
 )
 
 var (
@@ -147,7 +149,9 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 
 	reflection.Register(a.grpcServer)
 
-	desc.RegisterAuthV1Server(a.grpcServer, a.serviceProvider.UserImpl(ctx))
+	desc.RegisterUserV1Server(a.grpcServer, a.serviceProvider.UserImpl(ctx))
+	descAuth.RegisterAuthV1Server(a.grpcServer, a.serviceProvider.AuthImpl(ctx))
+	descAccess.RegisterAccessV1Server(a.grpcServer, a.serviceProvider.AccessImpl(ctx))
 
 	return nil
 }
@@ -159,7 +163,7 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	err := desc.RegisterAuthV1HandlerFromEndpoint(ctx, mux, a.serviceProvider.GRPCConfig().Address(), opts)
+	err := desc.RegisterUserV1HandlerFromEndpoint(ctx, mux, a.serviceProvider.GRPCConfig().Address(), opts)
 	if err != nil {
 		return err
 	}

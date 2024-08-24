@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/s0vunia/auth_microservice/pkg/user_v1"
 	"github.com/s0vunia/platform_common/pkg/db"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/s0vunia/auth_microservice/internal/model"
-	"github.com/s0vunia/auth_microservice/pkg/auth_v1"
 )
 
 func (r *repo) Update(ctx context.Context, id int64, userUpdate *model.UserUpdate) error {
@@ -23,7 +23,7 @@ func (r *repo) Update(ctx context.Context, id int64, userUpdate *model.UserUpdat
 		builderUpdate = builderUpdate.
 			Set(emailColumn, userUpdate.Email)
 	}
-	if userUpdate.Role != model.Role(auth_v1.Role_UNKNOWN) {
+	if userUpdate.Role != model.Role(user_v1.Role_UNKNOWN) {
 		builderUpdate = builderUpdate.
 			Set(roleColumn, userUpdate.Role)
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/s0vunia/auth_microservice/internal/api/user"
 	"github.com/s0vunia/auth_microservice/internal/service"
 	serviceMocks "github.com/s0vunia/auth_microservice/internal/service/mocks"
-	desc "github.com/s0vunia/auth_microservice/pkg/auth_v1"
+	desc "github.com/s0vunia/auth_microservice/pkg/user_v1"
 	"github.com/stretchr/testify/require"
 )
 

@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package user_v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/s0vunia/auth_microservice/pkg/user_v1;user_v1";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "User API"
+    version: "1.0.0"
+    contact: {
+      name: "Dmitriy Burin"
+      email: "hahahihi@mail.com"
+    };
+  };
+
+  host: "87.242.119.23:8080",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json",
+};
+
+service UserV1 {
+  // Создает нового пользователя
+  rpc Create(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post: "/user/v1/create"
+      body: "*"
+    };
+  }
+  // Возвращает информацию о пользователе
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/user/v1"
+    };
+  }
+  // Обновляет информацию о пользователе
+  rpc Update(UpdateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/user/v1"
+      body: "*"
+    };
+  }
+  // Удаляет пользователя
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user/v1"
+    };
+  }
+  // Проверяет существование пользователя
+  rpc IsExists(IsExistsRequest) returns (IsExistsResponse) {
+    option (google.api.http) = {
+      get: "/user/v1/is_exists"
+    };
+  }
+}
+
+enum Role {
+  UNKNOWN = 0;
+  USER = 1;
+  ADMIN = 2;
+}
+
+message UserInfo {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string email = 2 [(validate.rules).string.email = true];
+  Role role = 3;
+}
+
+message User {
+  int64 id = 1;
+  UserInfo info = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message UserUpdate {
+  google.protobuf.StringValue name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  google.protobuf.StringValue email = 2 [(validate.rules).string.email = true];
+  Role role = 3;
+}
+
+message UserCreate {
+  UserInfo info = 1;
+  string password = 2;
+  string password_confirm = 3;
+}
+
+message CreateRequest {
+  UserCreate userCreate = 1;
+}
+
+message CreateResponse {
+  int64 id = 1;
+}
+
+message GetRequest {
+  int64 id = 1;
+}
+
+message GetResponse {
+  User user = 2;
+}
+
+message UpdateRequest {
+  int64 id = 1;
+  UserUpdate userUpdate = 2;
+}
+
+message DeleteRequest {
+  int64 id = 1;
+}
+
+message IsExistsRequest {
+  repeated int64 ids = 1;
+}
+
+message IsExistsResponse {
+  bool exists = 1;
+}

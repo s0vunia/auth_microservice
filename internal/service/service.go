@@ -19,3 +19,15 @@ type UserService interface {
 type ConsumerService interface {
 	RunConsumer(ctx context.Context) error
 }
+
+// AuthService represents a service for auth entities.
+type AuthService interface {
+	Login(ctx context.Context, userLogin *model.UserLogin) (string, error)
+	GetRefreshToken(ctx context.Context, refreshToken string) (string, error)
+	GetAccessToken(ctx context.Context, refreshToken string) (string, error)
+}
+
+// AccessService represents a service for access entities.
+type AccessService interface {
+	Check(ctx context.Context, endpointAddress string) error
+}
