@@ -7,6 +7,7 @@ import (
 
 	"github.com/gojuno/minimock/v3"
 	"github.com/s0vunia/auth_microservice/internal/api/user"
+	"github.com/s0vunia/auth_microservice/internal/logger"
 	"github.com/s0vunia/auth_microservice/internal/service"
 	serviceMocks "github.com/s0vunia/auth_microservice/internal/service/mocks"
 	desc "github.com/s0vunia/auth_microservice/pkg/user_v1"
@@ -21,6 +22,8 @@ func TestImplementation_IsExists(t *testing.T) {
 		ctx context.Context
 		req *desc.IsExistsRequest
 	}
+
+	logger.TestInit()
 
 	var (
 		ctx = context.Background()

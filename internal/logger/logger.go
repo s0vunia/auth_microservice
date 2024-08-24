@@ -12,6 +12,11 @@ func Init(core zapcore.Core, options ...zap.Option) {
 	globalLogger = zap.New(core, options...)
 }
 
+// TestInit initializes the logger for testing.
+func TestInit() {
+	globalLogger = zap.NewNop()
+}
+
 // Debug logs a message at DebugLevel.
 func Debug(msg string, fields ...zap.Field) {
 	globalLogger.Debug(msg, fields...)

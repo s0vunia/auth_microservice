@@ -9,6 +9,7 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/gojuno/minimock/v3"
 	user2 "github.com/s0vunia/auth_microservice/internal/api/user"
+	"github.com/s0vunia/auth_microservice/internal/logger"
 	"github.com/s0vunia/auth_microservice/internal/model"
 	"github.com/s0vunia/auth_microservice/internal/service"
 	serviceMocks "github.com/s0vunia/auth_microservice/internal/service/mocks"
@@ -25,6 +26,8 @@ func TestImplementation_Get(t *testing.T) {
 		ctx context.Context
 		req *desc.GetRequest
 	}
+
+	logger.TestInit()
 
 	var (
 		ctx = context.Background()
