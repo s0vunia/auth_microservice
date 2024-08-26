@@ -235,6 +235,14 @@ github.com/rs/zerolog v1.13.0/go.mod h1:YbFCdg8HfsridGWAh22vktObvhZbQsZXe4/zB0OK
 github.com/rs/zerolog v1.15.0/go.mod h1:xYTKnLHcpfU2225ny5qZjxnj9NvkumZYjJHlAThCjNc=
 github.com/s0vunia/platform_common v1.0.4 h1:R0SwpszC/yCwZeaoE/LI6iRnakqeT0EOAqd4oczDYGk=
 github.com/s0vunia/platform_common v1.0.4/go.mod h1:Fr9ozrBozOUAb1npLsJSyncnovfa+nF4BbMiIr84ExY=
+github.com/s0vunia/platform_common v1.1.0 h1:wvxLWwA2zLuSTl6BGMnBA6nTJORo9eRZJQe2mNii7xg=
+github.com/s0vunia/platform_common v1.1.0/go.mod h1:Fr9ozrBozOUAb1npLsJSyncnovfa+nF4BbMiIr84ExY=
+github.com/s0vunia/platform_common v1.1.1 h1:+OUtyNKUJvPlJHzmsEuEn0dTyc3v6MmMJlxxN6vMH9c=
+github.com/s0vunia/platform_common v1.1.1/go.mod h1:+UuKkJDDZoA271rl1cmIk0kCCujeyDOxPetxw85FvOk=
+github.com/s0vunia/platform_common v1.1.2 h1:XlBpYqzVKZmtnJip571X4MKMXII3U+2chTtKdjpfnVg=
+github.com/s0vunia/platform_common v1.1.2/go.mod h1:+UuKkJDDZoA271rl1cmIk0kCCujeyDOxPetxw85FvOk=
+github.com/s0vunia/platform_common v1.1.3 h1:LmvFEp81VVZmbDAJy1U4qPK4vvLHaVYJlypKTTOrLW8=
+github.com/s0vunia/platform_common v1.1.3/go.mod h1:+UuKkJDDZoA271rl1cmIk0kCCujeyDOxPetxw85FvOk=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24/go.mod h1:M+9NzErvs504Cn4c5DxATwIqPbtswREoFCre64PpcG4=
 github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc/go.mod h1:DKyhrW/HYNuLGql+MJL6WCR6knT2jwCFRcu2hWCYk4o=

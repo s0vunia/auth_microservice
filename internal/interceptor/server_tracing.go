@@ -12,6 +12,7 @@ import (
 
 const traceIDKey = "x-trace-id"
 
+// ServerTracingInterceptor intercepts and traces gRPC requests
 func ServerTracingInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, info.FullMethod)
 	defer span.Finish()

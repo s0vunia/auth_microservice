@@ -18,7 +18,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.7
 	github.com/rs/cors v1.11.0
-	github.com/s0vunia/platform_common v1.0.4
+	github.com/s0vunia/platform_common v1.1.3
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.26.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240723171418-e6d459c13d2a
