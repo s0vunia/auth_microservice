@@ -172,7 +172,7 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> .env
             
             # Deploy services defined in docker-compose.yml
-            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui prometheus grafana
+            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui prometheus grafana jaeger
 
   linter:
     name: lint

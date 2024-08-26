@@ -17,6 +17,11 @@ func TestInit() {
 	globalLogger = zap.NewNop()
 }
 
+// Logger returns the global logger.
+func Logger() *zap.Logger {
+	return globalLogger
+}
+
 // Debug logs a message at DebugLevel.
 func Debug(msg string, fields ...zap.Field) {
 	globalLogger.Debug(msg, fields...)

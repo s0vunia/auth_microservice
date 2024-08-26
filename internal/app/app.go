@@ -16,6 +16,7 @@ import (
 	"github.com/s0vunia/auth_microservice/internal/interceptor"
 	"github.com/s0vunia/auth_microservice/internal/logger"
 	"github.com/s0vunia/auth_microservice/internal/metric"
+	"github.com/s0vunia/auth_microservice/internal/tracing"
 	descAccess "github.com/s0vunia/auth_microservice/pkg/access_v1"
 	descAuth "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"go.uber.org/zap"
@@ -36,7 +37,8 @@ import (
 )
 
 var (
-	configPath string
+	configPath  string
+	serviceName = "auth-service"
 )
 
 func init() {
@@ -150,6 +152,7 @@ func (a *App) initDeps(ctx context.Context) error {
 		a.initServiceProvider,
 		a.initLogger,
 		a.initMetric,
+		a.initTracing,
 		a.initGRPCServer,
 		a.initHTTPServer,
 		a.initSwaggerServer,
@@ -186,6 +189,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 		grpc.UnaryInterceptor(
 			grpcMiddleware.ChainUnaryServer(
 				interceptor.MetricsInterceptor,
+				interceptor.ServerTracingInterceptor,
 				interceptor.LogInterceptor,
 				interceptor.ValidateInterceptor,
 			),
@@ -266,6 +270,16 @@ func (a *App) initMetric(ctx context.Context) error {
 		return err
 	}
 
+	return nil
+}
+
+func (a *App) initLogger(_ context.Context) error {
+	logger.Init(a.getCore(a.getAtomicLevel()))
+	return nil
+}
+
+func (a *App) initTracing(_ context.Context) error {
+	tracing.Init(logger.Logger(), serviceName)
 	return nil
 }
 
@@ -385,11 +399,6 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			zap.String("path", path),
 		)
 	}
-}
-
-func (a *App) initLogger(_ context.Context) error {
-	logger.Init(a.getCore(a.getAtomicLevel()))
-	return nil
 }
 
 func (a *App) getCore(level zap.AtomicLevel) zapcore.Core {
