@@ -11,7 +11,6 @@ import (
 
 type serv struct {
 	userRepository         repository.UserRepository
-	logsRepository         repository.LogRepository
 	cache                  cache.UserCache
 	txManager              db.TxManager
 	refreshTokenSecretKey  string
@@ -23,7 +22,6 @@ type serv struct {
 // NewService creates a new auth service.
 func NewService(
 	userRepository repository.UserRepository,
-	logsRepository repository.LogRepository,
 	cache cache.UserCache,
 	txManager db.TxManager,
 	refreshTokenSecretKey string,
@@ -33,7 +31,6 @@ func NewService(
 ) service.AuthService {
 	return &serv{
 		userRepository:         userRepository,
-		logsRepository:         logsRepository,
 		cache:                  cache,
 		txManager:              txManager,
 		refreshTokenSecretKey:  refreshTokenSecretKey,

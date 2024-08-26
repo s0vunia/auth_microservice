@@ -27,7 +27,6 @@ import (
 
 	"github.com/s0vunia/auth_microservice/internal/config"
 	"github.com/s0vunia/auth_microservice/internal/repository"
-	logRepository "github.com/s0vunia/auth_microservice/internal/repository/log"
 	userRepository "github.com/s0vunia/auth_microservice/internal/repository/user"
 	"github.com/s0vunia/auth_microservice/internal/service"
 	accessService "github.com/s0vunia/auth_microservice/internal/service/access"
@@ -53,7 +52,6 @@ type serviceProvider struct {
 	redisClient cacheCl.Client
 
 	userRepository repository.UserRepository
-	logsRepository repository.LogRepository
 	cache          cache.UserCache
 
 	userService   service.UserService
@@ -280,14 +278,6 @@ func (s *serviceProvider) UserRepository(ctx context.Context) repository.UserRep
 	return s.userRepository
 }
 
-func (s *serviceProvider) LogsRepository(ctx context.Context) repository.LogRepository {
-	if s.logsRepository == nil {
-		s.logsRepository = logRepository.NewRepository(s.DBClient(ctx))
-	}
-
-	return s.logsRepository
-}
-
 func (s *serviceProvider) Cache() cache.UserCache {
 	if s.cache == nil {
 		s.cache = userCache.NewCache(s.RedisClient())
@@ -299,7 +289,6 @@ func (s *serviceProvider) UserService(ctx context.Context) service.UserService {
 	if s.userService == nil {
 		s.userService = userService.NewService(
 			s.UserRepository(ctx),
-			s.LogsRepository(ctx),
 			s.Cache(),
 			s.TxManager(ctx),
 		)
@@ -312,7 +301,6 @@ func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	if s.authService == nil {
 		s.authService = authService.NewService(
 			s.UserRepository(ctx),
-			s.LogsRepository(ctx),
 			s.Cache(),
 			s.TxManager(ctx),
 			s.JWTConfig().RefreshSecretKey(),
@@ -328,7 +316,6 @@ func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 func (s *serviceProvider) AccessService(ctx context.Context) service.AccessService {
 	if s.accessService == nil {
 		s.accessService = accessService.NewService(
-			s.LogsRepository(ctx),
 			s.Cache(),
 			s.TxManager(ctx),
 			s.JWTConfig().AuthPrefix(),
