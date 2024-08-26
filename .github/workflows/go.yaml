@@ -133,8 +133,9 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.yaml,local.env,prod.env,prometheus.yml,alerts.yml"
+          source: "docker-compose.yaml,local.env,prod.env,*.yml"
           target: "/tmp/"
+          overwrite: 'true'
 
 
       - name: Deploy to Selectel Cloud via SSH action
