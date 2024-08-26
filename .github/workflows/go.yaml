@@ -62,6 +62,8 @@ jobs:
           echo LOG_FILE_MAX_BACKUPS=${{ secrets.LOG_FILE_MAX_BACKUPS }} >> prod.env
           echo LOG_FILE_MAX_AGE=${{ secrets.LOG_FILE_MAX_AGE }} >> prod.env
           echo LOG_LEVEL=${{ secrets.LOG_LEVEL }} >> prod.env
+          echo PROMETHEUS_HOST=${{ secrets.PROMETHEUS_HOST }} >> prod.env
+          echo PROMETHEUS_PORT=${{ secrets.PROMETHEUS_PORT }} >> prod.env
           cat prod.env
 
       - name: Build and Push Docker Image
@@ -121,6 +123,8 @@ jobs:
           echo LOG_FILE_MAX_BACKUPS=${{ secrets.LOG_FILE_MAX_BACKUPS }} >> prod.env
           echo LOG_FILE_MAX_AGE=${{ secrets.LOG_FILE_MAX_AGE }} >> prod.env
           echo LOG_LEVEL=${{ secrets.LOG_LEVEL }} >> prod.env
+          echo PROMETHEUS_HOST=${{ secrets.PROMETHEUS_HOST }} >> prod.env
+          echo PROMETHEUS_PORT=${{ secrets.PROMETHEUS_PORT }} >> prod.env
           cat prod.env
 
       - name: Copy files to server using SSH key

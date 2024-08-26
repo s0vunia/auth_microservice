@@ -37,6 +37,11 @@ type SwaggerConfig interface {
 	Address() string
 }
 
+// PrometheusConfig - config for prometheus
+type PrometheusConfig interface {
+	Address() string
+}
+
 // RedisConfig - config for Redis
 type RedisConfig interface {
 	Address() string

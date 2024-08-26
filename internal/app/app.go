@@ -10,10 +10,12 @@ import (
 
 	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/cors"
 	"github.com/s0vunia/auth_microservice/internal/interceptor"
 	"github.com/s0vunia/auth_microservice/internal/logger"
+	"github.com/s0vunia/auth_microservice/internal/metric"
 	descAccess "github.com/s0vunia/auth_microservice/pkg/access_v1"
 	descAuth "github.com/s0vunia/auth_microservice/pkg/auth_v1"
 	"go.uber.org/zap"
@@ -43,10 +45,11 @@ func init() {
 
 // App represents the app.
 type App struct {
-	serviceProvider *serviceProvider
-	grpcServer      *grpc.Server
-	httpServer      *http.Server
-	swaggerServer   *http.Server
+	serviceProvider  *serviceProvider
+	grpcServer       *grpc.Server
+	httpServer       *http.Server
+	swaggerServer    *http.Server
+	prometheusServer *http.Server
 }
 
 // NewApp creates a new app.
@@ -68,12 +71,11 @@ func (a *App) Run(ctx context.Context) error {
 		closer.Wait()
 	}()
 
-	a.initLogger()
 	logger.Info(a.serviceProvider.LoggerConfig().FileName())
 
 	wg := sync.WaitGroup{}
-	wg.Add(4)
 
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 
@@ -86,6 +88,7 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}()
 
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 
@@ -98,6 +101,7 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}()
 
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 
@@ -110,6 +114,7 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}()
 
+	wg.Add(1)
 	go func() {
 		defer wg.Done()
 
@@ -117,6 +122,18 @@ func (a *App) Run(ctx context.Context) error {
 		if err != nil {
 			logger.Fatal(
 				"failed to run user saver consumer",
+				zap.Error(err),
+			)
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := a.runPrometheus()
+		if err != nil {
+			logger.Fatal(
+				"failed to run prometheus",
 				zap.Error(err),
 			)
 		}
@@ -131,9 +148,12 @@ func (a *App) initDeps(ctx context.Context) error {
 	inits := []func(context.Context) error{
 		a.initConfig,
 		a.initServiceProvider,
+		a.initLogger,
+		a.initMetric,
 		a.initGRPCServer,
 		a.initHTTPServer,
 		a.initSwaggerServer,
+		a.initPrometheusServer,
 	}
 
 	for _, f := range inits {
@@ -165,6 +185,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 		grpc.Creds(insecure.NewCredentials()),
 		grpc.UnaryInterceptor(
 			grpcMiddleware.ChainUnaryServer(
+				interceptor.MetricsInterceptor,
 				interceptor.LogInterceptor,
 				interceptor.ValidateInterceptor,
 			),
@@ -227,6 +248,27 @@ func (a *App) initSwaggerServer(_ context.Context) error {
 	return nil
 }
 
+func (a *App) initPrometheusServer(_ context.Context) error {
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
+
+	a.prometheusServer = &http.Server{
+		Addr:              a.serviceProvider.PrometheusConfig().Address(),
+		Handler:           mux,
+		ReadHeaderTimeout: a.serviceProvider.HTTPConfig().ReadHeaderTimeout(),
+	}
+	return nil
+}
+
+func (a *App) initMetric(ctx context.Context) error {
+	err := metric.Init(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a *App) runGRPCServer() error {
 	logger.Info("GRPC server is running",
 		zap.String("address", a.serviceProvider.GRPCConfig().Address()),
@@ -257,6 +299,20 @@ func (a *App) runHTTPServer() error {
 
 	return nil
 }
+
+func (a *App) runPrometheus() error {
+	logger.Info("Prometheus server is running",
+		zap.String("address", a.serviceProvider.PrometheusConfig().Address()),
+	)
+
+	err := a.prometheusServer.ListenAndServe()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a *App) runSwaggerServer() error {
 	logger.Info("Swagger server is running",
 		zap.String("address", a.serviceProvider.SwaggerConfig().Address()),
@@ -331,8 +387,9 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 	}
 }
 
-func (a *App) initLogger() {
+func (a *App) initLogger(_ context.Context) error {
 	logger.Init(a.getCore(a.getAtomicLevel()))
+	return nil
 }
 
 func (a *App) getCore(level zap.AtomicLevel) zapcore.Core {

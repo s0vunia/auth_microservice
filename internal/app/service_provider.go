@@ -41,6 +41,7 @@ type serviceProvider struct {
 	httpConfig          config.HTTPConfig
 	jwtConfig           config.JWTConfig
 	swaggerConfig       config.SwaggerConfig
+	prometheusConfig    config.SwaggerConfig
 	redisConfig         config.RedisConfig
 	kafkaConsumerConfig config.KafkaConsumerConfig
 	loggerConfig        config.LoggerConfig
@@ -152,6 +153,22 @@ func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
 	}
 
 	return s.swaggerConfig
+}
+
+func (s *serviceProvider) PrometheusConfig() config.PrometheusConfig {
+	if s.prometheusConfig == nil {
+		cfg, err := env.NewPrometheusConfig()
+		if err != nil {
+			logger.Fatal(
+				"failed to get prometheus config",
+				zap.Error(err),
+			)
+		}
+
+		s.prometheusConfig = cfg
+	}
+
+	return s.prometheusConfig
 }
 
 func (s *serviceProvider) RedisConfig() config.RedisConfig {
