@@ -57,6 +57,13 @@ jobs:
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
           echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
           echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
+          echo LOG_FILENAME=${{ secrets.LOG_FILENAME }} >> prod.env
+          echo LOG_FILE_MAX_SIZE=${{ secrets.LOG_FILE_MAX_SIZE }} >> prod.env
+          echo LOG_FILE_MAX_BACKUPS=${{ secrets.LOG_FILE_MAX_BACKUPS }} >> prod.env
+          echo LOG_FILE_MAX_AGE=${{ secrets.LOG_FILE_MAX_AGE }} >> prod.env
+          echo LOG_LEVEL=${{ secrets.LOG_LEVEL }} >> prod.env
+          echo PROMETHEUS_HOST=${{ secrets.PROMETHEUS_HOST }} >> prod.env
+          echo PROMETHEUS_PORT=${{ secrets.PROMETHEUS_PORT }} >> prod.env
           cat prod.env
 
       - name: Build and Push Docker Image
@@ -111,6 +118,13 @@ jobs:
           echo REDIS_IDLE_TIMEOUT_SEC=${{ secrets.REDIS_IDLE_TIMEOUT_SEC }} >> prod.env
           echo KAFKA_BROKERS=${{ secrets.KAFKA_BROKERS }} >> prod.env
           echo KAFKA_GROUP_ID=${{ secrets.KAFKA_GROUP_ID }} >> prod.env
+          echo LOG_FILENAME=${{ secrets.LOG_FILENAME }} >> prod.env
+          echo LOG_FILE_MAX_SIZE=${{ secrets.LOG_FILE_MAX_SIZE }} >> prod.env
+          echo LOG_FILE_MAX_BACKUPS=${{ secrets.LOG_FILE_MAX_BACKUPS }} >> prod.env
+          echo LOG_FILE_MAX_AGE=${{ secrets.LOG_FILE_MAX_AGE }} >> prod.env
+          echo LOG_LEVEL=${{ secrets.LOG_LEVEL }} >> prod.env
+          echo PROMETHEUS_HOST=${{ secrets.PROMETHEUS_HOST }} >> prod.env
+          echo PROMETHEUS_PORT=${{ secrets.PROMETHEUS_PORT }} >> prod.env
           cat prod.env
 
       - name: Copy files to server using SSH key
@@ -119,7 +133,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.yaml,local.env,prod.env"
+          source: "alerts.yaml,prometheus.yaml,docker-compose.yaml,local.env,prod.env"
           target: "/tmp/"
 
 
@@ -158,7 +172,7 @@ jobs:
             echo "TAG_NAME=$TAG_NAME" >> .env
             
             # Deploy services defined in docker-compose.yml
-            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui 
+            sudo docker compose --env-file .env up -d auth-prod pg-prod migrator-prod redis-prod zookeeper kafka1 kafka2 kafka3 kafka-ui prometheus grafana jaeger
 
   linter:
     name: lint

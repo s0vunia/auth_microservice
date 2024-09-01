@@ -37,6 +37,11 @@ type SwaggerConfig interface {
 	Address() string
 }
 
+// PrometheusConfig - config for prometheus
+type PrometheusConfig interface {
+	Address() string
+}
+
 // RedisConfig - config for Redis
 type RedisConfig interface {
 	Address() string
@@ -55,6 +60,15 @@ type KafkaConsumerConfig interface {
 	Brokers() []string
 	GroupID() string
 	Config() *sarama.Config
+}
+
+// LoggerConfig - config for logger
+type LoggerConfig interface {
+	Level() string
+	FileName() string
+	MaxSize() int
+	MaxAge() int
+	MaxBackups() int
 }
 
 // Load - loads config from .env

@@ -2,14 +2,19 @@ package user
 
 import (
 	"context"
-	"log"
 
 	"github.com/s0vunia/auth_microservice/internal/converter"
+	"github.com/s0vunia/auth_microservice/internal/logger"
 	desc "github.com/s0vunia/auth_microservice/pkg/user_v1"
+	"go.uber.org/zap"
 )
 
 // Create creates a new user.
 func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+	logger.Info(
+		"Creating user...",
+		zap.String("name", req.GetUserCreate().GetInfo().GetName()),
+	)
 	if req.GetUserCreate().GetPassword() != req.GetUserCreate().GetPasswordConfirm() {
 		return nil, PasswordConfirmErr
 	}
@@ -18,8 +23,6 @@ func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("inserted user with id: %d", id)
 
 	return &desc.CreateResponse{
 		Id: id,

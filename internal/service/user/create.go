@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/s0vunia/auth_microservice/internal/model"
 	"github.com/s0vunia/auth_microservice/internal/utils"
@@ -31,14 +30,6 @@ func (s serv) Create(ctx context.Context, userCreate *model.UserCreate) (int64, 
 				Email: userCreate.Email,
 				Role:  userCreate.Role,
 			},
-		})
-
-		if errTx != nil {
-			return errTx
-		}
-
-		_, errTx = s.logsRepository.Create(ctx, &model.LogCreate{
-			Message: fmt.Sprintf("User %d created", id),
 		})
 
 		if errTx != nil {
